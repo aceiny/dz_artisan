@@ -1,73 +1,138 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
+# DZ-Artisan - Artisan Services Platform
+## About
+DZ-Artisan is a platform connecting skilled artisans (plumbers, electricians, carpenters, etc.) with clients, enabling quick access to qualified professionals for various services.
+## Database schema
 ```bash
-$ npm install
+https://drawsql.app/teams/aceiny/diagrams/dz-artisan
+```
+## API Documentation
+```bash
+# API documentation is auto-generated using Swagger and can be accessed at:
+/api
 ```
 
-## Running the app
+## Getting Started
 
+### Prerequisites
+```bash
+node >= 16.x
+npm >= 8.x
+PostgreSQL >= 14
+```
+
+### Cloning 
+```bash 
+$ git clone https://github.com/aceiny/dz_artisan.git
+```
+### Installation 
+#### This applies to each one of the folders (freelancer dashboard , core app )
+```bash 
+$ npm i -g @nestjs/cli && npm install
+```
+### Environment Variables
+```bash 
+JWT_SECRET=your_JWT_secret
+DB_HOST=your_database_host
+DB_PORT=5432 // default port for postgres
+DB_USER=your_database_username
+DB_PASSWORD=your_database_password
+DB_NAME=your_database_name
+```
+
+### Running the app
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
+$ npm run start:dev or nest start --watch
 
 # production mode
-$ npm run start:prod
+$ npm run start:prod or nest start prod
 ```
 
-## Test
-
+## Testing
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# E2E tests
+npm run test:e2e
 ```
 
-## Support
+## Project Structure
+src/
+├── artisans/       # Artisan management
+├── quotes/         # Quote system
+├── jobs/          # Job tracking
+├── users/         # User management
+├── messages/      # Messaging system
+├── reviews/       # Review system
+└── common/        # Shared utilities
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Features
+### For Artisans
+- Professional profile management
+- Portfolio showcase
+- Certification verification
+- Quote management
+- Scheduling system
+- Integrated billing
 
-## Stay in touch
+### For Clients
+- Search qualified artisans
+- Online quote requests
+- Price comparison
+- Real-time job tracking
+- Integrated messaging
+- Review system
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Security Measures 
+
+- #### Strong authentication :
+using Passport.js and guards to control access based on authentication
+- #### Encryption : 
+Encrypting and hashing passwords
+- #### Vulnerability Prevention : 
+Leverage security features built into NestJS like Helmet, which helps configure secure HTTP headers to mitigate common attacks.
+- #### Input Validation :
+Validate all user-provided data to prevent unexpected inputs or malicious code injection
+- #### Rate Limiting :
+Implement rate limiting to prevent brute-force attacks or denial-of-service attempts.
+
+## Technologies Used
+- TypeScript
+- Node.js
+- Nest.js
+- class-validator
+- postgresql
+- uuid
+- JWT
+- Passport js
+- bcrypt
+- swagger
+
+## Contributing
+1. Create feature branch
+2. Commit changes
+3. Open pull request
+4. Follow code standards
+
+## Testing Requirements
+- Minimum 3 critical unit tests
+- E2E testing with Selenium
+- Documented test scenarios
+
+## Development Methodology
+- Agile/Scrum
+- 2-week sprints
+- Daily standups
+- Role rotation every 2 sprints
+
+## Deployment
+1. Automated via GitHub Actions
+2. Docker containerization
+3. Deployment to cloud platforms
 
 ## License
+MIT
 
-Nest is [MIT licensed](LICENSE).
+## Contributors
+- Ahmed Yassine Zeraibi , yzeraibi2000@gmail.com

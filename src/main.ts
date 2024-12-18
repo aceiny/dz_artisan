@@ -4,7 +4,9 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { GlobalExceptionFilter } from './common/global-expection.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -35,6 +37,8 @@ async function bootstrap() {
 
   // add global expection filter
   app.useGlobalFilters(new GlobalExceptionFilter());
+
+  console.log('DB_HOST from main :', process.env.DB_HOST);
 
   // run app on specified port or 3000
   await app.listen(process.env.PORT || 3000);

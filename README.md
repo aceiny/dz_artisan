@@ -48,7 +48,7 @@ $ npm run start:dev or nest start --watch
 $ npm run start:prod or nest start prod
 ```
 
-## Testing
+### Testing
 ```bash
 # Unit tests
 npm run test
@@ -58,16 +58,18 @@ npm run test:e2e
 ```
 
 ## Project Structure
+```bash
 src/
 ├── artisans/       # Artisan management
 ├── quotes/         # Quote system
-├── jobs/          # Job tracking
-├── users/         # User management
-├── messages/      # Messaging system
-├── reviews/       # Review system
-└── common/        # Shared utilities
-
+├── jobs/           # Job tracking
+├── users/          # User management
+├── messages/       # Messaging system
+├── reviews/        # Review system
+└── common/         # Shared utilities
+```
 ## Features
+
 ### For Artisans
 - Professional profile management
 - Portfolio showcase

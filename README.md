@@ -1,11 +1,17 @@
 # DZ-Artisan - Artisan Services Platform
+
 ## About
+
 DZ-Artisan is a platform connecting skilled artisans (plumbers, electricians, carpenters, etc.) with clients, enabling quick access to qualified professionals for various services.
+
 ## Database schema
+
 ```bash
 https://drawsql.app/teams/aceiny/diagrams/dz-artisan
 ```
+
 ## API Documentation
+
 ```bash
 # API documentation is auto-generated using Swagger and can be accessed at:
 /api
@@ -14,23 +20,30 @@ https://drawsql.app/teams/aceiny/diagrams/dz-artisan
 ## Getting Started
 
 ### Prerequisites
+
 ```bash
 node >= 16.x
 npm >= 8.x
 PostgreSQL >= 14
 ```
 
-### Cloning 
-```bash 
+### Cloning
+
+```bash
 $ git clone https://github.com/aceiny/dz_artisan.git
 ```
-### Installation 
+
+### Installation
+
 #### This applies to each one of the folders (freelancer dashboard , core app )
-```bash 
+
+```bash
 $ npm i -g @nestjs/cli && npm install
 ```
+
 ### Environment Variables
-```bash 
+
+```bash
 JWT_SECRET=your_JWT_secret
 DB_HOST=your_database_host
 DB_PORT=5432 // default port for postgres
@@ -40,6 +53,7 @@ DB_NAME=your_database_name
 ```
 
 ### Running the app
+
 ```bash
 # development
 $ npm run start:dev or nest start --watch
@@ -49,6 +63,7 @@ $ npm run start:prod or nest start prod
 ```
 
 ### Testing
+
 ```bash
 # Unit tests
 npm run test
@@ -58,6 +73,7 @@ npm run test:e2e
 ```
 
 ## Project Structure
+
 ```bash
 src/
 ├── artisans/       # Artisan management
@@ -68,9 +84,11 @@ src/
 ├── reviews/        # Review system
 └── common/         # Shared utilities
 ```
+
 ## Features
 
 ### For Artisans
+
 - Professional profile management
 - Portfolio showcase
 - Certification verification
@@ -79,6 +97,7 @@ src/
 - Integrated billing
 
 ### For Clients
+
 - Search qualified artisans
 - Online quote requests
 - Price comparison
@@ -86,20 +105,21 @@ src/
 - Integrated messaging
 - Review system
 
-## Security Measures 
+## Security Measures
 
 - #### Strong authentication :
-using Passport.js and guards to control access based on authentication
-- #### Encryption : 
-Encrypting and hashing passwords
-- #### Vulnerability Prevention : 
-Leverage security features built into NestJS like Helmet, which helps configure secure HTTP headers to mitigate common attacks.
+  using Passport.js and guards to control access based on authentication
+- #### Encryption :
+  Encrypting and hashing passwords
+- #### Vulnerability Prevention :
+  Leverage security features built into NestJS like Helmet, which helps configure secure HTTP headers to mitigate common attacks.
 - #### Input Validation :
-Validate all user-provided data to prevent unexpected inputs or malicious code injection
+  Validate all user-provided data to prevent unexpected inputs or malicious code injection
 - #### Rate Limiting :
-Implement rate limiting to prevent brute-force attacks or denial-of-service attempts.
+  Implement rate limiting to prevent brute-force attacks or denial-of-service attempts.
 
 ## Technologies Used
+
 - TypeScript
 - Node.js
 - Nest.js
@@ -112,29 +132,35 @@ Implement rate limiting to prevent brute-force attacks or denial-of-service atte
 - swagger
 
 ## Contributing
+
 1. Create feature branch
 2. Commit changes
 3. Open pull request
 4. Follow code standards
 
 ## Testing Requirements
+
 - Minimum 3 critical unit tests
 - E2E testing with Selenium
 - Documented test scenarios
 
 ## Development Methodology
+
 - Agile/Scrum
 - 2-week sprints
 - Daily standups
 - Role rotation every 2 sprints
 
 ## Deployment
+
 1. Automated via GitHub Actions
 2. Docker containerization
 3. Deployment to cloud platforms
 
 ## License
+
 MIT
 
 ## Contributors
+
 - Ahmed Yassine Zeraibi , yzeraibi2000@gmail.com

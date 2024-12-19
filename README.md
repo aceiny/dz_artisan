@@ -86,14 +86,19 @@ npm run test:e2e
 
 ```bash
 src/
-├── artisans/       # Artisan management
-├── quotes/         # Quote system
-├── jobs/           # Job tracking
-├── users/          # User management
-├── messages/       # Messaging system
-├── reviews/        # Review system
-└── common/         # Shared utilities
+├── auth/           # Authorization system, handles user authentication and JWT strategies
+├── user/           # User management, including artisan and client profiles
+├── certification/  # Certification system, manages user certifications
+├── job/            # Job tracking, handles job creation, updates, and status tracking
+├── message/        # Messaging system, manages chat and messages between users
+├── review/         # Review system, handles user reviews and ratings
+├── common/         # Shared utilities, common functions and helpers
+├── config/         # Service configurations, environment variables, and settings
+├── mail/           # Email service, handles sending emails
+├── file/           # File management, handles file uploads and storage
+└── database/       # Database module, manages database connections and queries
 ```
+
 
 ## Features
 

@@ -58,9 +58,9 @@ CREATE TABLE certifications (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- Portfolio items
-CREATE TABLE portfolio_items (
-    item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+-- Experiences
+CREATE TABLE experiences (
+    experience_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -72,14 +72,9 @@ CREATE TABLE portfolio_items (
 -- Chat system
 CREATE TABLE chats (
     chat_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user1_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    user2_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE chat_participants (
-    chat_id uuid REFERENCES chats(chat_id) ON DELETE CASCADE,
-    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-    joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (chat_id, user_id)
 );
 
 CREATE TABLE messages (
@@ -156,5 +151,4 @@ CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_quote_status ON quotes(status);
 CREATE INDEX idx_job_status ON jobs(status);
 CREATE INDEX idx_messages_chat ON messages(chat_id);
-CREATE INDEX idx_chat_participants ON chat_participants(user_id);
 CREATE INDEX idx_reviews_rating ON reviews(rating);

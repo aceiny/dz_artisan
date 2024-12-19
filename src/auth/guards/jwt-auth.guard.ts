@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConfig } from 'src/config/jwt.config';
+import { JwtConfig } from 'src/config/jwt.config';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt-access') {
@@ -26,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt-access') {
     }
 
     try {
-      request.user = this.jwtService.verify(token, jwtConfig); // jwt config
+      request.user = this.jwtService.verify(token, JwtConfig); // jwt config
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token is expired');

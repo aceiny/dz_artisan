@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CertificationService } from './certification.service';
 import { CreateCertificationDto } from './dto/create-certification.dto';
@@ -16,6 +18,9 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterConfig } from 'src/config/multer.config';
+import { ParseFormDataInterceptor } from 'src/common/form-data.interceptor';
 
 @ApiTags('Certification')
 @Controller('certification')
@@ -24,10 +29,16 @@ export class CertificationController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor("attachment", MulterConfig),
+    ParseFormDataInterceptor,
+  )
   async create(
     @Body() createCertificationDto: CreateCertificationDto,
     @GetUser() user: jwtPayload,
+    @UploadedFile() attachment : Express.Multer.File
   ) {
+    console.log(attachment)
     const data = await this.certificationService.create(
       createCertificationDto,
       user,

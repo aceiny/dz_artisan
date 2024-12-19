@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import { jwtRefreshConfig } from 'src/config/jwt.config';
+import { JwtRefreshConfig } from 'src/config/jwt.config';
 
 @Injectable()
 export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {
@@ -26,7 +26,7 @@ export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {
       throw new UnauthorizedException('Invalid refresh token format');
     }
     try {
-      request.user = this.jwtService.verify(token, jwtRefreshConfig);
+      request.user = this.jwtService.verify(token, JwtRefreshConfig);
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Refresh token expired');

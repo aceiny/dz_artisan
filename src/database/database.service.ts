@@ -1,14 +1,14 @@
 // src/database/database.service.ts
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { Client, ClientConfig } from 'pg';
-import { pgPoolConfig } from 'src/config/database.config';
+import { Client } from 'pg';
+import { PgPoolConfig } from 'src/config/database.config';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private client: Client;
 
   constructor() {
-    this.client = new Client(pgPoolConfig);
+    this.client = new Client(PgPoolConfig);
   }
 
   async onModuleInit() {

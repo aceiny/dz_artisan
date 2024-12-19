@@ -3,12 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CertificationModule } from './certification/certification.module';
+import { FileModule } from './file/file.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, AuthModule, CertificationModule],
+  imports: [DatabaseModule, UserModule, AuthModule, CertificationModule, FileModule, MailModule],
   controllers: [AppController],
   providers: [AppService],
 })

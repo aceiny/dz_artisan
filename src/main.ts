@@ -12,8 +12,8 @@ async function bootstrap() {
 
   // swagger docs set up
   const config = new DocumentBuilder()
-    .setTitle('survision')
-    .setDescription('#')
+    .setTitle('dz_artisan')
+    .setDescription('dz artisan api for finding jobs in algeria')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

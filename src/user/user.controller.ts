@@ -24,19 +24,19 @@ export class UserController {
   async signup(@Body() signupUserDto: SignupUserDto) {
     const data = await this.userService.signup(signupUserDto);
     return {
-      message : "User signed up successfully",
-      status : HttpStatus.CREATED,
-      data
-    }
+      message: 'User signed up successfully',
+      status: HttpStatus.CREATED,
+      data,
+    };
   }
   @Post('/signin')
   async signin(@Body() signinUserDto: SigninUserDto) {
     const data = await this.userService.signin(signinUserDto);
     return {
-      message : "User signed in successfully",
-      status : HttpStatus.OK,
-      data
-    }
+      message: 'User signed in successfully',
+      status: HttpStatus.OK,
+      data,
+    };
   }
 
   @Get()
@@ -50,8 +50,7 @@ export class UserController {
   }
   @Get('/me')
   @UseGuards(JwtAuthGuard)
-  async findUserProfile(@GetUser() user : jwtPayload) {
-    console.log(user)
+  async findUserProfile(@GetUser() user: jwtPayload) {
     const data = await this.userService.findOne(user.id);
     return {
       message: 'User Found',
@@ -61,8 +60,7 @@ export class UserController {
   }
   @Get('/refresh-token')
   @UseGuards(JwtRefreshGuard)
-  async refreshToken(@GetUser() user : jwtPayload) {
-    console.log("user , hehe refresh :" , user)
+  async refreshToken(@GetUser() user: jwtPayload) {
     const data = await this.userService.refreshToken(user);
     return {
       message: 'Token Refreshed',
@@ -79,5 +77,4 @@ export class UserController {
       data,
     };
   }
-
 }

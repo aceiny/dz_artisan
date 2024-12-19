@@ -10,7 +10,7 @@ import { jwtPayload } from 'src/auth/types/payload.type';
 export class UserService {
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly authService : AuthService
+    private readonly authService: AuthService,
   ) {}
   async checkUserExists(email: string) {
     if (!email) throw new ConflictException('No Email Provided');
@@ -61,17 +61,17 @@ export class UserService {
       signupUserDto.wilaya,
     ];
     const user = await this.databaseService.query(query, values);
-    if(!user[0]) throw new ConflictException('User not created');
+    if (!user[0]) throw new ConflictException('User not created');
     return {
-      access_token : await this.authService.generateAccessToken({
-        id : user[0].user_id,
-        role : user[0].role
+      access_token: await this.authService.generateAccessToken({
+        id: user[0].user_id,
+        role: user[0].role,
       }),
-      refresh_token : await this.authService.generateRefreshToken({
-        id : user[0].user_id,
-        role : user[0].role
-      })
-    }
+      refresh_token: await this.authService.generateRefreshToken({
+        id: user[0].user_id,
+        role: user[0].role,
+      }),
+    };
   }
 
   async signin(signinUserDto: SigninUserDto) {
@@ -80,15 +80,15 @@ export class UserService {
     const is_match = await bcrypt.compare(signinUserDto.password, password);
     if (!is_match) throw new ConflictException('Invalid Credentials');
     return {
-      access_token : await this.authService.generateAccessToken({
-        id : user.user_id,
-        role : user.role
+      access_token: await this.authService.generateAccessToken({
+        id: user.user_id,
+        role: user.role,
       }),
-      refresh_token : await this.authService.generateRefreshToken({
-        id : user.user_id,
-        role : user.role
-      })
-    }
+      refresh_token: await this.authService.generateRefreshToken({
+        id: user.user_id,
+        role: user.role,
+      }),
+    };
   }
   async findOne(userId: string) {
     const query = `
@@ -110,12 +110,12 @@ export class UserService {
     if (user.length === 0) throw new ConflictException('User Not Found');
     return user[0];
   }
-  async refreshToken(payload : jwtPayload) {
-    return{
-      access_token : await this.authService.generateAccessToken({
-        id : payload.id,
-        role : payload.role
-      })
-    }
+  async refreshToken(payload: jwtPayload) {
+    return {
+      access_token: await this.authService.generateAccessToken({
+        id: payload.id,
+        role: payload.role,
+      }),
+    };
   }
 }

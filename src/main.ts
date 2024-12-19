@@ -38,8 +38,6 @@ async function bootstrap() {
   // add global expection filter
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  console.log('DB_HOST from main :', process.env.DB_HOST);
-
   // run app on specified port or 3000
   await app.listen(process.env.PORT || 3000);
 }

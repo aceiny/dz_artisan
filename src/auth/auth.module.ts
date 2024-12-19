@@ -7,13 +7,20 @@ import { RolesGuard } from './guards/roles.guard';
 import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
 
 @Module({
-  imports : [
+  imports: [
     PassportModule.register({
-      defaultStrategy: ['jwt-access' , 'jwt-refresh'],
+      defaultStrategy: ['jwt-access', 'jwt-refresh'],
     }),
     JwtModule.register({}),
   ],
-  providers: [AuthService , JwtStrategy , JwtRefreshStrategy ,  RolesGuard],
-  exports : [JwtStrategy , JwtRefreshStrategy , PassportModule , RolesGuard , JwtModule , AuthService]
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
+  exports: [
+    JwtStrategy,
+    JwtRefreshStrategy,
+    PassportModule,
+    RolesGuard,
+    JwtModule,
+    AuthService,
+  ],
 })
 export class AuthModule {}

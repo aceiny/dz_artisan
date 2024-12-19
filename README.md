@@ -3,6 +3,7 @@
 ## About
 
 DZ-Artisan is a platform connecting skilled artisans (plumbers, electricians, carpenters, etc.) with clients, enabling quick access to qualified professionals for various services.
+This project was made with typescript , nest.js and without orm using sql raw queries 
 
 ## Database schema
 

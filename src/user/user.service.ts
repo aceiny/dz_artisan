@@ -3,9 +3,14 @@ import { DatabaseService } from 'src/database/database.service';
 import { SignupUserDto } from './dto/signup-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SigninUserDto } from './dto/signin-user.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { access } from 'fs';
 @Injectable()
 export class UserService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly authService : AuthService
+  ) {}
   async checkUserExists(email: string) {
     if (!email) throw new ConflictException('No Email Provided');
     const query = 'SELECT email FROM users WHERE email = $1';
@@ -54,7 +59,18 @@ export class UserService {
       signupUserDto.address,
       signupUserDto.wilaya,
     ];
-    return this.databaseService.query(query, values);
+    const user = await this.databaseService.query(query, values);
+    if(!user[0]) throw new ConflictException('User not created');
+    return {
+      access_token : await this.authService.generateAccessToken({
+        id : user[0].user_id,
+        role : user[0].role
+      }),
+      refresh_token : await this.authService.generateRefreshToken({
+        id : user[0].user_id,
+        role : user[0].role
+      })
+    }
   }
 
   async signin(signinUserDto: SigninUserDto) {
@@ -62,7 +78,16 @@ export class UserService {
     const password = user.password;
     const is_match = await bcrypt.compare(signinUserDto.password, password);
     if (!is_match) throw new ConflictException('Invalid Credentials');
-    return true;
+    return {
+      access_token : await this.authService.generateAccessToken({
+        id : user.user_id,
+        role : user.role
+      }),
+      refresh_token : await this.authService.generateRefreshToken({
+        id : user.user_id,
+        role : user.role
+      })
+    }
   }
   async findOne(userId: string) {
     const query = `

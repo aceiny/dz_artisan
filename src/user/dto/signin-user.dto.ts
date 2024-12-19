@@ -8,12 +8,11 @@ import {
 } from 'class-validator';
 
 export class SigninUserDto {
-
   @ApiProperty({
     description: 'Email of the user',
     type: String,
     required: true,
-    example: 'yzeraibi2000@gmail.com'
+    example: 'yzeraibi2000@gmail.com',
   })
   @IsEmail()
   email: string;
@@ -22,7 +21,7 @@ export class SigninUserDto {
     description: 'Email of the user',
     type: String,
     required: true,
-    example: 'yzeraibi2000@gmail.com'
+    example: 'yzeraibi2000@gmail.com',
   })
   @IsStrongPassword()
   password: string;

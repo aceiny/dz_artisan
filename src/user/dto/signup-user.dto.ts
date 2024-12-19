@@ -8,12 +8,11 @@ import {
 } from 'class-validator';
 
 export class SignupUserDto {
-
   @ApiProperty({
     description: 'full name of the user',
     type: String,
     required: true,
-    example: 'Yacine Zeraibi'
+    example: 'Yacine Zeraibi',
   })
   @IsString()
   @IsNotEmpty()
@@ -23,7 +22,7 @@ export class SignupUserDto {
     description: 'phone number of the user',
     type: String,
     required: true,
-    example: '+213555555555'
+    example: '+213555555555',
   })
   @IsPhoneNumber('DZ')
   phone_number: string;
@@ -32,7 +31,7 @@ export class SignupUserDto {
     description: 'email of the user',
     type: String,
     required: true,
-    example: 'yzeraibi2000@gmail.com'
+    example: 'yzeraibi2000@gmail.com',
   })
   @IsEmail()
   email: string;
@@ -41,7 +40,7 @@ export class SignupUserDto {
     description: 'password of the user',
     type: String,
     required: true,
-    example: 'Yacine@123'
+    example: 'Yacine@123',
   })
   @IsStrongPassword()
   password: string;
@@ -50,7 +49,7 @@ export class SignupUserDto {
     description: 'address of the user',
     type: String,
     required: true,
-    example: 'Cité 1000 logements'
+    example: 'Cité 1000 logements',
   })
   @IsString()
   @IsNotEmpty()
@@ -60,7 +59,7 @@ export class SignupUserDto {
     description: 'wilaya of the user',
     type: String,
     required: true,
-    example: 'Oran'
+    example: 'Oran',
   })
   @IsString()
   wilaya: string;

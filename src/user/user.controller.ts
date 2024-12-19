@@ -15,7 +15,14 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -23,13 +30,13 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Signup a new user',
-    responses : {
+    responses: {
       201: {
         description: 'User signed up successfully',
       },
-      409 : {
+      409: {
         description: 'Conflict , Email already exists',
-      }
+      },
     },
   })
   @Post('/signup')
@@ -44,13 +51,13 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Signin a user',
-    responses : {
+    responses: {
       200: {
         description: 'User signed in successfully',
       },
-      401 : {
+      401: {
         description: 'Unauthorized , Invalid credentials',
-      }
+      },
     },
   })
   @Post('/signin')
@@ -65,11 +72,11 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Get all users',
-    responses : {
+    responses: {
       200: {
         description: 'Users Found',
       },
-    }
+    },
   })
   @Get()
   async findAll() {
@@ -83,13 +90,14 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Get loged in user profile by token',
-    responses : {
+    responses: {
       200: {
         description: 'User Found',
       },
-      401 : {
+      401: {
         description: 'Unauthorized , Invalid Token',
-      }}
+      },
+    },
   })
   @ApiBearerAuth('Bearer')
   @Get('/me')
@@ -105,13 +113,14 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Get new access token by refresh token',
-    responses : {
+    responses: {
       200: {
         description: 'Token Refreshed',
       },
-      401 : {
+      401: {
         description: 'Unauthorized , Invalid Token',
-      }}
+      },
+    },
   })
   @ApiBearerAuth('Refresh')
   @Get('/refresh-token')
@@ -127,13 +136,14 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Get user by id',
-    responses : {
+    responses: {
       200: {
-        description: 'User Found'
+        description: 'User Found',
       },
-      404 : {
+      404: {
         description: 'User not found',
-      }},
+      },
+    },
   })
   @ApiParam({
     name: 'userId',

@@ -45,25 +45,11 @@ SELECT
     updated_at
 FROM users;
 
--- Artisan profiles
-CREATE TABLE artisan_profiles (
-    artisan_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-    business_name VARCHAR(255),
-    trade_type VARCHAR(100) NOT NULL,
-    description TEXT,
-    years_experience INTEGER CHECK (years_experience >= 0),
-    rating DECIMAL(2,1) CHECK (rating >= 0 AND rating <= 5),
-    is_verified BOOLEAN DEFAULT false,
-    available_for_work BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
+-- Artisan profiles (now part of users)
 -- Certifications
 CREATE TABLE certifications (
     certification_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    artisan_id uuid REFERENCES artisan_profiles(artisan_id) ON DELETE CASCADE,
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     issuing_authority VARCHAR(255),
     issue_date DATE,
@@ -75,7 +61,7 @@ CREATE TABLE certifications (
 -- Portfolio items
 CREATE TABLE portfolio_items (
     item_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    artisan_id uuid REFERENCES artisan_profiles(artisan_id) ON DELETE CASCADE,
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     completion_date DATE,
@@ -120,7 +106,7 @@ CREATE TABLE quote_requests (
 CREATE TABLE quotes (
     quote_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     request_id uuid REFERENCES quote_requests(request_id) ON DELETE CASCADE,
-    artisan_id uuid REFERENCES artisan_profiles(artisan_id) ON DELETE CASCADE,
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
     description TEXT,
     validity_period INTEGER CHECK (validity_period > 0),
@@ -146,7 +132,7 @@ CREATE TABLE reviews (
     review_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     job_id uuid REFERENCES jobs(job_id) ON DELETE CASCADE,
     client_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-    artisan_id uuid REFERENCES artisan_profiles(artisan_id) ON DELETE CASCADE,
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -155,11 +141,6 @@ CREATE TABLE reviews (
 -- Add triggers
 CREATE TRIGGER update_users_timestamp
     BEFORE UPDATE ON users
-    FOR EACH ROW
-    EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_artisan_profiles_timestamp
-    BEFORE UPDATE ON artisan_profiles
     FOR EACH ROW
     EXECUTE FUNCTION update_timestamp();
 
@@ -172,10 +153,8 @@ CREATE TRIGGER update_jobs_timestamp
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_wilaya ON users(wilaya);
 CREATE INDEX idx_users_role ON users(role);
-CREATE INDEX idx_artisan_trade ON artisan_profiles(trade_type);
 CREATE INDEX idx_quote_status ON quotes(status);
 CREATE INDEX idx_job_status ON jobs(status);
 CREATE INDEX idx_messages_chat ON messages(chat_id);
 CREATE INDEX idx_chat_participants ON chat_participants(user_id);
-CREATE INDEX idx_reviews_artisan ON reviews(artisan_id);
 CREATE INDEX idx_reviews_rating ON reviews(rating);

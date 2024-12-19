@@ -61,7 +61,7 @@ export class UserService {
       signupUserDto.wilaya,
     ];
     const user = (await this.databaseService.query(query, values))[0];
-    console.log(user)
+    console.log(user);
     if (!user) throw new ConflictException('User not created');
     return {
       access_token: await this.authService.generateAccessToken({

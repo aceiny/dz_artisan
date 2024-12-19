@@ -14,6 +14,7 @@ import { SigninUserDto } from './dto/signin-user.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
 
 @Controller('user')
 export class UserController {
@@ -58,7 +59,18 @@ export class UserController {
       data,
     };
   }
-  @Get(':userId')
+  @Get('/refresh-token')
+  @UseGuards(JwtRefreshGuard)
+  async refreshToken(@GetUser() user : jwtPayload) {
+    console.log("user , hehe refresh :" , user)
+    const data = await this.userService.refreshToken(user);
+    return {
+      message: 'Token Refreshed',
+      status: HttpStatus.OK,
+      data,
+    };
+  }
+  @Get('/:userId')
   async findOne(@Param('userId', new ParseUUIDPipe()) userId: string) {
     const data = await this.userService.findOne(userId);
     return {
@@ -67,4 +79,5 @@ export class UserController {
       data,
     };
   }
+
 }

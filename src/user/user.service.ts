@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { access } from 'fs';
+import { jwtPayload } from 'src/auth/types/payload.type';
 @Injectable()
 export class UserService {
   constructor(
@@ -106,8 +107,15 @@ export class UserService {
     `;
     const values = [userId];
     const user = await this.databaseService.query(query, values);
-    console.log(user);
     if (user.length === 0) throw new ConflictException('User Not Found');
     return user[0];
+  }
+  async refreshToken(payload : jwtPayload) {
+    return{
+      access_token : await this.authService.generateAccessToken({
+        id : payload.id,
+        role : payload.role
+      })
+    }
   }
 }

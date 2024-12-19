@@ -1,4 +1,4 @@
-import { JwtModuleOptions, JwtSignOptions } from "@nestjs/jwt";
+import { JwtSignOptions } from "@nestjs/jwt";
 
 export const jwtConfig : JwtSignOptions = {
     secret: process.env.JWT_SECRET,

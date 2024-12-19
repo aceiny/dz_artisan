@@ -17,7 +17,7 @@ https://drawsql.app/teams/aceiny/diagrams/dz-artisan
 # API documentation is auto-generated using Swagger and can be accessed at:
 /api
 ```
-
+w
 ## Getting Started
 
 ### Prerequisites

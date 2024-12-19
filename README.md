@@ -47,12 +47,20 @@ $ npm i -g @nestjs/cli && npm install
 ### Environment Variables
 
 ```bash
-JWT_SECRET=your_JWT_secret
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRE_IN=1d
+JWT_REFRESH_SECRET=your_refresh_jwt_secret_key
+JWT_REFRESH_EXPIRE_IN=7d
 DB_HOST=your_database_host
-DB_PORT=5432 // default port for postgres
-DB_USER=your_database_username
+DB_PORT=your_database_port
+DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 DB_NAME=your_database_name
+SMTP_USER=your_smtp_user
+SMTP_PASSWORD=your_smtp_password
+BACKEND_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:3001
+PORT=3000
 ```
 
 ### Running the app

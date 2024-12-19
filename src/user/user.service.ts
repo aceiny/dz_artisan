@@ -60,16 +60,17 @@ export class UserService {
       signupUserDto.address,
       signupUserDto.wilaya,
     ];
-    const user = await this.databaseService.query(query, values);
-    if (!user[0]) throw new ConflictException('User not created');
+    const user = (await this.databaseService.query(query, values))[0];
+    console.log(user)
+    if (!user) throw new ConflictException('User not created');
     return {
       access_token: await this.authService.generateAccessToken({
-        id: user[0].user_id,
-        role: user[0].role,
+        id: user.user_id,
+        role: user.role,
       }),
       refresh_token: await this.authService.generateRefreshToken({
-        id: user[0].user_id,
-        role: user[0].role,
+        id: user.user_id,
+        role: user.role,
       }),
     };
   }

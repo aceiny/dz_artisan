@@ -8,6 +8,7 @@ import { DatabaseService } from 'src/database/database.service';
 export class CertificationService {
   constructor(private databaseService: DatabaseService) {}
 
+  //certafication url is online 
   async create(
     createCertificationDto: CreateCertificationDto,
     attachment: Express.Multer.File,

@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   HttpStatus,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
@@ -23,6 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -61,8 +63,8 @@ export class UserController {
     },
   })
   @Post('/signin')
-  async signin(@Body() signinUserDto: SigninUserDto) {
-    const data = await this.userService.signin(signinUserDto);
+  async signin(@Body() signinUserDto: SigninUserDto, @Req() req: Request) {
+    const data = await this.userService.signin(signinUserDto, req);
     return {
       message: 'User signed in successfully',
       status: HttpStatus.OK,

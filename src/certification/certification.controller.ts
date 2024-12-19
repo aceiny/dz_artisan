@@ -28,20 +28,20 @@ export class CertificationController {
   constructor(private readonly certificationService: CertificationService) {}
 
   @ApiOperation({
-    summary: 'Create a new certification' ,
-    description: 'This will create a new certification for the user (form data) ',
-
+    summary: 'Create a new certification',
+    description:
+      'This will create a new certification for the user (form data) ',
   })
   @Post()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
-    FileInterceptor("attachment", MulterConfig),
+    FileInterceptor('attachment', MulterConfig),
     ParseFormDataInterceptor,
   )
   async create(
     @Body() createCertificationDto: CreateCertificationDto,
     @GetUser() user: jwtPayload,
-    @UploadedFile() attachment : Express.Multer.File
+    @UploadedFile() attachment: Express.Multer.File,
   ) {
     const data = await this.certificationService.create(
       createCertificationDto,

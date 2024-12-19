@@ -10,7 +10,7 @@ export class CertificationService {
 
   async create(
     createCertificationDto: CreateCertificationDto,
-    attachment : Express.Multer.File,
+    attachment: Express.Multer.File,
     user: jwtPayload,
   ) {
     if (

@@ -4,13 +4,17 @@ import { SignupUserDto } from './dto/signup-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { access } from 'fs';
 import { jwtPayload } from 'src/auth/types/payload.type';
+import { MailService } from 'src/mail/mail.service';
+import { Request } from 'express';
+import { SendMailDto } from 'src/mail/dto/send-mail.dto';
+import * as requestIp from 'request-ip';
 @Injectable()
 export class UserService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly authService: AuthService,
+    private readonly mailService: MailService,
   ) {}
   async checkUserExists(email: string) {
     if (!email) throw new ConflictException('No Email Provided');
@@ -63,6 +67,17 @@ export class UserService {
     const user = (await this.databaseService.query(query, values))[0];
     console.log(user);
     if (!user) throw new ConflictException('User not created');
+    const mailDto = {
+      to: user.email,
+      subject: 'Welcome to DZ-Artisan!',
+      text: 'Welcome to DZ-Artisan!',
+      data: {
+        name: user.full_name,
+        email: user.email,
+        phone_number: user.phone_number,
+      },
+    };
+    await this.mailService.sendWelcomeMail(mailDto);
     return {
       access_token: await this.authService.generateAccessToken({
         id: user.user_id,
@@ -75,11 +90,30 @@ export class UserService {
     };
   }
 
-  async signin(signinUserDto: SigninUserDto) {
+  async signin(signinUserDto: SigninUserDto, req: Request) {
     const user = await this.findUserByEmail(signinUserDto.email);
     const password = user.password;
     const is_match = await bcrypt.compare(signinUserDto.password, password);
     if (!is_match) throw new ConflictException('Invalid Credentials');
+
+    // Extract IP address and device information
+    const ip_address = requestIp.getClientIp(req);
+    const device = req.headers['user-agent'];
+
+    // Send New Login Mail
+    const mailDto: SendMailDto = {
+      to: user.email,
+      subject: 'New Login Detected',
+      text: 'New Login Detected',
+      data: {
+        name: user.full_name,
+        date: new Date().toISOString(),
+        device: device,
+        location: ip_address, // Placeholder for location
+        ip_address: ip_address,
+      },
+    };
+    await this.mailService.sendNewLoginMail(mailDto);
     return {
       access_token: await this.authService.generateAccessToken({
         id: user.user_id,

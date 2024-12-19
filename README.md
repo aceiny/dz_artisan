@@ -18,7 +18,6 @@ https://drawsql.app/teams/aceiny/diagrams/dz-artisan
 /api
 ```
 
-w
 
 ## Getting Started
 
@@ -56,11 +55,12 @@ DB_PORT=your_database_port
 DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 DB_NAME=your_database_name
+SMTP_HOST=your_smtp_host
 SMTP_USER=your_smtp_user
 SMTP_PASSWORD=your_smtp_password
 BACKEND_URL=http://localhost:3000
 FRONTEND_URL=http://localhost:3001
-PORT=3000
+PORT=3000 || prefered port 
 ```
 
 ### Running the app

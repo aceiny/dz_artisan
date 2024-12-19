@@ -10,6 +10,7 @@ export class CertificationService {
 
   async create(
     createCertificationDto: CreateCertificationDto,
+    attachment : Express.Multer.File,
     user: jwtPayload,
   ) {
     if (
@@ -30,7 +31,7 @@ export class CertificationService {
       createCertificationDto.issuing_authority,
       createCertificationDto.issue_date,
       createCertificationDto.expiry_date,
-      'https://google.com/document',
+      `${process.env.BACKEND_URL}/uploads/${attachment.filename}`,
     ];
     const certification = (await this.databaseService.query(query, values))[0];
     return certification;

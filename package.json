@@ -30,6 +30,7 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^8.1.0",
     "@nestjs/throttler": "^6.3.0",
+    "@nestjs/websockets": "^10.4.15",
     "@types/nodemailer": "^6.4.17",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsDateString, IsString } from 'class-validator';
+import { IsDate, IsDateString, IsString, IsUrl } from 'class-validator';
 
 export class CreateCertificationDto {
   @ApiProperty({
@@ -33,4 +33,12 @@ export class CreateCertificationDto {
   })
   @IsDateString()
   expiry_date: string;
+
+  @ApiProperty({
+    example : 'https://www.coursera.org/',
+    description: 'The URL to the certification document',
+    required: true
+  })
+  @IsUrl()
+  document_url : string 
 }

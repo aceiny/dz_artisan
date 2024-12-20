@@ -3,13 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   HttpStatus,
-  UseInterceptors,
-  UploadedFile,
+  ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { CertificationService } from './certification.service';
 import { CreateCertificationDto } from './dto/create-certification.dto';
@@ -18,9 +17,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterConfig } from 'src/config/multer.config';
-import { ParseFormDataInterceptor } from 'src/common/form-data.interceptor';
 
 @ApiTags('Certification')
 @Controller('certification')
@@ -31,21 +27,23 @@ export class CertificationController {
     summary: 'Create a new certification',
     description:
       'This will create a new certification for the user (form data) ',
+    responses : {
+      201 : {
+        description : 'Certification Created Successfully'
+      },
+      409 : {
+        description : 'Issue Date must be less than Expiry Date'
+      }
+    }
   })
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('attachment', MulterConfig),
-    ParseFormDataInterceptor,
-  )
   async create(
     @Body() createCertificationDto: CreateCertificationDto,
     @GetUser() user: jwtPayload,
-    @UploadedFile() attachment: Express.Multer.File,
   ) {
     const data = await this.certificationService.create(
       createCertificationDto,
-      attachment,
       user,
     );
     return {
@@ -55,29 +53,100 @@ export class CertificationController {
     };
   }
 
+  @ApiOperation({
+    summary: 'Find all certifications',
+    description: 'This will return all certifications for the logged in user',
+    responses : {
+      200 : {
+        description : 'Certifications Fetched Successfully'
+      },
+    }
+  })
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    const data = await this.certificationService.findAll();
+  async findAllByUserId(@GetUser() user: jwtPayload) {
+    const data = await this.certificationService.findAllByUserId(user.id);
+    return {
+      message :'Certifications Fetched Successfully',
+      status : HttpStatus.OK,
+      data
+    }
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const data = await this.certificationService.findOne(+id);
+  @ApiOperation({
+    summary: 'Find a certification by ID',
+    description: 'This will return a certification by ID for the logged in user',
+    responses : {
+      200 : {
+        description : 'Certification Fetched Successfully'
+      },
+      404 : {
+        description : 'Certification Not Found'
+      }
+    }
+  })
+  @Get('/:certificationId')
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Param('certificationId' , new ParseUUIDPipe()) certificationId: string , @GetUser() user: jwtPayload) {
+    const data = await this.certificationService.findOne(certificationId);
+    return {
+      message: 'Certification Fetched Successfully',
+      status: HttpStatus.OK,
+      data,
+    };
   }
 
-  @Patch(':id')
+  @ApiOperation({
+    summary: 'Update a certification',
+    description: 'This will update a certification by ID for the logged in user',
+    responses : {
+      200 : {
+        description : 'Certification Updated Successfully'
+      },
+      404 : {
+        description : 'Certification Not Found Or Not Belongs to User'
+      }
+    }
+  })
+  @Put(':certificationId')
+  @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('certificationId' , new ParseUUIDPipe()) certificationId: string,
     @Body() updateCertificationDto: UpdateCertificationDto,
+    @GetUser() user: jwtPayload
   ) {
     const data = await this.certificationService.update(
-      +id,
+      certificationId,
+      user.id,
       updateCertificationDto,
     );
+    return {
+      message: 'Certification Updated Successfully',
+      status: HttpStatus.OK,
+      data,
+    }
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const data = await this.certificationService.remove(+id);
+  @ApiOperation({
+    summary: 'Delete a certification',
+    description: 'This will delete a certification by ID for the logged in user',
+    responses : {
+      200 : {
+        description : 'Certification Deleted Successfully'
+      },
+      404 : {
+        description : 'Certification Not Found Or Not Belongs to User'
+      }
+    }
+  })
+  @Delete(':certificationId')
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('certificationId' , new ParseUUIDPipe()) certificationId: string , @GetUser() user: jwtPayload) {
+    const data = await this.certificationService.remove(certificationId , user.id);
+    return {
+      message: 'Certification Deleted Successfully',
+      status: HttpStatus.OK,
+      data,
+    }
   }
 }

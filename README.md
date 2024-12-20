@@ -99,7 +99,6 @@ src/
 └── database/       # Database module, manages database connections and queries
 ```
 
-
 ## Features
 
 ### For Artisans

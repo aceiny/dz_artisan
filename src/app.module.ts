@@ -12,6 +12,9 @@ import { ThrottlerConfig } from './config/throttler-config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ServerStaticConfig } from './config/server-static.config';
 import { APP_GUARD } from '@nestjs/core';
+import { ExperiencesModule } from './experience/experiences.module';
+import { ChatModule } from './chat/chat.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -23,6 +26,8 @@ import { APP_GUARD } from '@nestjs/core';
     CertificationModule,
     FileModule,
     MailModule,
+    ExperiencesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

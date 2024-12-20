@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCertificationDto } from './dto/create-certification.dto';
 import { UpdateCertificationDto } from './dto/update-certification.dto';
 import { jwtPayload } from 'src/auth/types/payload.type';
@@ -9,7 +13,7 @@ import { NotFoundError } from 'rxjs';
 export class CertificationService {
   constructor(private databaseService: DatabaseService) {}
 
-  //certafication url is online 
+  //certafication url is online
   async create(
     createCertificationDto: CreateCertificationDto,
     user: jwtPayload,
@@ -32,36 +36,39 @@ export class CertificationService {
       createCertificationDto.issuing_authority,
       createCertificationDto.issue_date,
       createCertificationDto.expiry_date,
-      createCertificationDto.document_url
+      createCertificationDto.document_url,
     ];
     const certification = (await this.databaseService.query(query, values))[0];
     return certification;
   }
 
-  async findAllByUserId(userId : string) {
+  async findAllByUserId(userId: string) {
     const query = `
     SELECT * FROM certifications WHERE user_id = $1
     `;
-    const values = [userId]
-    const certafications = await this.databaseService.query(query , values)
-    return certafications
+    const values = [userId];
+    const certafications = await this.databaseService.query(query, values);
+    return certafications;
   }
 
   async findOne(certificationId: string) {
     const query = `
     SELECT * FROM certifications WHERE certification_id  = $1  
     `;
-    const values = [certificationId]
-    const certafication = (await this.databaseService.query(query , values))[0]
-    if(!certafication){
-      throw new NotFoundException('Certification Not Found')
+    const values = [certificationId];
+    const certafication = (await this.databaseService.query(query, values))[0];
+    if (!certafication) {
+      throw new NotFoundException('Certification Not Found');
     }
-    return certafication
-    
+    return certafication;
   }
 
-  async update(certificationId: string, userId : string  , updateCertificationDto: UpdateCertificationDto) {
-    console.log(updateCertificationDto , userId , certificationId)
+  async update(
+    certificationId: string,
+    userId: string,
+    updateCertificationDto: UpdateCertificationDto,
+  ) {
+    console.log(updateCertificationDto, userId, certificationId);
     const query = `
     UPDATE certifications SET name = $1, issuing_authority = $2, issue_date = $3, expiry_date = $4, document_url = $5
     WHERE certification_id = $6 AND user_id = $7
@@ -76,12 +83,12 @@ export class CertificationService {
       certificationId,
       userId,
     ];
-    const certafication = (await this.databaseService.query(query , values))[0]
-    console.log(certafication)
-    if(!certafication){
-      throw new NotFoundException('Certification Not Found')
+    const certafication = (await this.databaseService.query(query, values))[0];
+    console.log(certafication);
+    if (!certafication) {
+      throw new NotFoundException('Certification Not Found');
     }
-    return certafication
+    return certafication;
   }
 
   async remove(certificationId: string, userId: string) {

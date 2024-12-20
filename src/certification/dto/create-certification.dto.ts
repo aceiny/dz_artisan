@@ -35,10 +35,10 @@ export class CreateCertificationDto {
   expiry_date: string;
 
   @ApiProperty({
-    example : 'https://www.coursera.org/',
+    example: 'https://www.coursera.org/',
     description: 'The URL to the certification document',
-    required: true
+    required: true,
   })
   @IsUrl()
-  document_url : string 
+  document_url: string;
 }

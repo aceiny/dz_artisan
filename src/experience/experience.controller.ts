@@ -27,6 +27,16 @@ import { ApiOperation } from '@nestjs/swagger';
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
+  @ApiOperation({
+    summary: 'Create a new experience',
+    description:
+      'This will create a new experience for the user (form data) ',
+    responses: {
+      201: {
+        description: 'Experience Created Successfully',
+      },
+    },
+  })
   @Post()
   @UseInterceptors(
     FilesInterceptor('attachments', 10, MulterConfig),
@@ -52,6 +62,11 @@ export class ExperienceController {
   @ApiOperation({
     summary: 'Get all experiences',
     description: 'Get all experiences for logged in user',
+    responses: {
+      201: {
+        description: 'Experiences Fetched Successfully',
+      },
+    },
   })
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -67,6 +82,14 @@ export class ExperienceController {
   @ApiOperation({
     summary: 'Get experience by ID',
     description: 'Get single experience by ID',
+    responses: {
+      200: {
+        description: 'Experience Fetched Successfully',
+      },
+      404: {
+        description: 'Experience Not Found',
+      },
+    },
   })
   @Get('/:experienceId')
   @UseGuards(JwtAuthGuard)
@@ -84,6 +107,14 @@ export class ExperienceController {
   @ApiOperation({
     summary: 'Update experience',
     description: 'Update experience by ID',
+     responses: {
+      200: {
+        description: 'Experience Updated Successfully',
+      },
+      404: {
+        description: 'Experience Not Found Or Not Belongs to User',
+      },
+    },
   })
   @Put('/:experienceId')
   @UseGuards(JwtAuthGuard)
@@ -107,7 +138,14 @@ export class ExperienceController {
   @ApiOperation({
     summary: 'Delete experience',
     description: 'Delete experience by ID',
-  })
+    responses: {
+      200: {
+        description: 'Experience Deleted Successfully',
+      },
+      404: {
+        description: 'Experience Not Found Or Not Belongs to User',
+      },
+  }})
   @Delete(':experienceId')
   @UseGuards(JwtAuthGuard)
   async remove(

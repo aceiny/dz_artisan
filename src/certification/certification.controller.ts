@@ -49,7 +49,6 @@ export class CertificationController {
     return {
       message: 'Certification Created Successfully',
       status: HttpStatus.CREATED,
-      data,
     };
   }
 

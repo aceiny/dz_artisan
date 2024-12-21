@@ -8,6 +8,7 @@ import {
   HttpStatus,
   UseGuards,
   Req,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
@@ -16,15 +17,8 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { Request } from 'express';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -42,12 +36,13 @@ export class UserController {
     },
   })
   @Post('/signup')
-  async signup(@Body() signupUserDto: SignupUserDto) {
-    const data = await this.userService.signup(signupUserDto);
+  async signup(
+    @Res({passthrough : true}) res : Response ,
+    @Body() signupUserDto: SignupUserDto) {
+    const data = await this.userService.signup(signupUserDto , res);
     return {
       message: 'User signed up successfully',
       status: HttpStatus.CREATED,
-      data,
     };
   }
 
@@ -63,12 +58,15 @@ export class UserController {
     },
   })
   @Post('/signin')
-  async signin(@Body() signinUserDto: SigninUserDto, @Req() req: Request) {
-    const data = await this.userService.signin(signinUserDto, req);
+  async signin(
+    @Body() signinUserDto: SigninUserDto,
+    @Req() req: Request,
+    @Res({passthrough : true}) res : Response ,
+  ) {
+    const data = await this.userService.signin(signinUserDto, req , res);
     return {
       message: 'User signed in successfully',
       status: HttpStatus.OK,
-      data,
     };
   }
 
@@ -127,12 +125,11 @@ export class UserController {
   @ApiBearerAuth('Refresh')
   @Get('/refresh-token')
   @UseGuards(JwtRefreshGuard)
-  async refreshToken(@GetUser() user: jwtPayload) {
-    const data = await this.userService.refreshToken(user);
+  async refreshToken(@GetUser() user: jwtPayload , @Res({passthrough : true}) res : Response) {
+    const data = await this.userService.refreshToken(user , res);
     return {
       message: 'Token Refreshed',
       status: HttpStatus.OK,
-      data,
     };
   }
 

@@ -6,7 +6,7 @@ import { SigninUserDto } from './dto/signin-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { MailService } from 'src/mail/mail.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
 import * as requestIp from 'request-ip';
 @Injectable()
@@ -49,7 +49,7 @@ export class UserService {
     const users = await this.databaseService.query(query);
     return users;
   }
-  async signup(signupUserDto: SignupUserDto) {
+  async signup(signupUserDto: SignupUserDto , res : Response) {
     if (await this.checkUserExists(signupUserDto.email))
       throw new ConflictException('Email Already Taken');
     const query =
@@ -77,20 +77,20 @@ export class UserService {
         phone_number: user.phone_number,
       },
     };
-    await this.mailService.sendWelcomeMail(mailDto);
-    return {
-      access_token: await this.authService.generateAccessToken({
-        id: user.user_id,
-        role: user.role,
-      }),
-      refresh_token: await this.authService.generateRefreshToken({
-        id: user.user_id,
-        role: user.role,
-      }),
-    };
+    //await this.mailService.sendWelcomeMail(mailDto);
+    const access_token =  await this.authService.generateAccessToken({
+      id: user.user_id,
+      role: user.role,
+    })
+    const refresh_token = await this.authService.generateRefreshToken({
+      id: user.user_id,
+      role: user.role,
+    })
+    this.authService.setCookies(res , access_token , refresh_token)
+    return true
   }
 
-  async signin(signinUserDto: SigninUserDto, req: Request) {
+  async signin(signinUserDto: SigninUserDto, req: Request , res : Response) {
     const user = await this.findUserByEmail(signinUserDto.email);
     const password = user.password;
     const is_match = await bcrypt.compare(signinUserDto.password, password);
@@ -113,17 +113,17 @@ export class UserService {
         ip_address: ip_address,
       },
     };
-    await this.mailService.sendNewLoginMail(mailDto);
-    return {
-      access_token: await this.authService.generateAccessToken({
-        id: user.user_id,
-        role: user.role,
-      }),
-      refresh_token: await this.authService.generateRefreshToken({
-        id: user.user_id,
-        role: user.role,
-      }),
-    };
+    //await this.mailService.sendNewLoginMail(mailDto);
+    const access_token =  await this.authService.generateAccessToken({
+      id: user.user_id,
+      role: user.role,
+    })
+    const refresh_token = await this.authService.generateRefreshToken({
+      id: user.user_id,
+      role: user.role,
+    })
+    this.authService.setCookies(res , access_token , refresh_token)
+    return true
   }
   async findOne(userId: string) {
     const query = `
@@ -145,12 +145,12 @@ export class UserService {
     if (user.length === 0) throw new ConflictException('User Not Found');
     return user[0];
   }
-  async refreshToken(payload: jwtPayload) {
-    return {
-      access_token: await this.authService.generateAccessToken({
-        id: payload.id,
-        role: payload.role,
-      }),
-    };
+  async refreshToken(payload: jwtPayload , res : Response) {
+    const new_access_token = await this.authService.generateAccessToken({
+      id: payload.id,
+      role: payload.role,
+    })
+    this.authService.setCookies(res , new_access_token)
+    return true
   }
 }

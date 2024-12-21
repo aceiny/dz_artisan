@@ -16,7 +16,7 @@ export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const token = request.cookies[process.env.JWT_REFRESH_COOKIE_NAME]; // Replace 'jwt' with your cookie name
-    console.log(token)
+    console.log('refresh' , token)
     if (!token) {
       throw new UnauthorizedException('JWT cookie not found');
     }

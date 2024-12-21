@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateExperienceDto {
-
   @ApiProperty({
     description: 'Title of the experience',
     example: 'Software Developer',

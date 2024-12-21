@@ -15,16 +15,12 @@ export class JwtAuthGuard extends AuthGuard('jwt-access') {
 
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedException('Authorization header not found');
-    }
 
-    const [bearer, token] = authHeader.split(' ');
-    if (bearer !== 'Bearer' || !token) {
-      throw new UnauthorizedException('Token not found or invalid format');
+    const token = request.cookies[process.env.JWT_COOKIE_NAME]; // Replace 'jwt' with your cookie name
+    console.log(token)
+    if (!token) {
+      throw new UnauthorizedException('JWT cookie not found');
     }
-
     try {
       request.user = this.jwtService.verify(token, JwtConfig); // jwt config
     } catch (err) {

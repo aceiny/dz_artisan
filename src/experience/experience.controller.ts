@@ -29,8 +29,7 @@ export class ExperienceController {
 
   @ApiOperation({
     summary: 'Create a new experience',
-    description:
-      'This will create a new experience for the user (form data) ',
+    description: 'This will create a new experience for the user (form data) ',
     responses: {
       201: {
         description: 'Experience Created Successfully',
@@ -107,7 +106,7 @@ export class ExperienceController {
   @ApiOperation({
     summary: 'Update experience',
     description: 'Update experience by ID',
-     responses: {
+    responses: {
       200: {
         description: 'Experience Updated Successfully',
       },
@@ -145,7 +144,8 @@ export class ExperienceController {
       404: {
         description: 'Experience Not Found Or Not Belongs to User',
       },
-  }})
+    },
+  })
   @Delete(':experienceId')
   @UseGuards(JwtAuthGuard)
   async remove(

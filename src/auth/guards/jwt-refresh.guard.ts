@@ -15,15 +15,10 @@ export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {
 
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.authorization;
-
-    if (!authHeader) {
-      throw new UnauthorizedException('Refresh token not found');
-    }
-
-    const [bearer, token] = authHeader.split(' ');
-    if (bearer !== 'Refresh' || !token) {
-      throw new UnauthorizedException('Invalid refresh token format');
+    const token = request.cookies[process.env.JWT_REFRESH_COOKIE_NAME]; // Replace 'jwt' with your cookie name
+    console.log(token)
+    if (!token) {
+      throw new UnauthorizedException('JWT cookie not found');
     }
     try {
       request.user = this.jwtService.verify(token, JwtRefreshConfig);

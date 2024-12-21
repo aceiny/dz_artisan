@@ -47,8 +47,10 @@ $ npm i -g @nestjs/cli && npm install
 ```bash
 JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRE_IN=1d
+JWT_COOKIE_NAME=token_cookie_name
 JWT_REFRESH_SECRET=your_refresh_jwt_secret_key
 JWT_REFRESH_EXPIRE_IN=7d
+JWT_REFRESH_COOKIE_NAME=refresh_token_cookie_name
 DB_HOST=your_database_host
 DB_PORT=your_database_port
 DB_USER=your_database_user
@@ -59,7 +61,7 @@ SMTP_USER=your_smtp_user
 SMTP_PASSWORD=your_smtp_password
 BACKEND_URL=http://localhost:3000
 FRONTEND_URL=http://localhost:3001
-PORT=3000 || prefered port
+PORT=3000 || another port
 ```
 
 ### Running the app
@@ -144,6 +146,7 @@ src/
 - Passport js
 - bcrypt
 - swagger
+- cookie parser 
 
 ## Contributing
 
@@ -169,7 +172,7 @@ src/
 
 1. Automated via GitHub Actions
 2. Docker containerization
-3. Deployment to cloud platforms
+3. Deployment to personnel vps
 
 ## License
 

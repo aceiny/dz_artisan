@@ -1,4 +1,5 @@
 name: Deploy to VPS
+
 on:
   push:
     branches: [ main ]
@@ -31,14 +32,17 @@ jobs:
 
       - name: Deploy and restart application
         run: |
-          # First, copy the dist folder
+          # Copy the dist folder to the VPS
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
             dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.DEPLOY_PATH }}/dist/
 
-          # Create .env file in dist directory and restart app
+          # Setup environment variables and restart the app with PM2
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.VPS_HOST }} "\
+            export NVM_DIR=\$HOME/.nvm && \
+            source \$NVM_DIR/nvm.sh && \
+            nvm use default && \
             echo '${{ secrets.PRODUCTION_ENV }}' > ${{ secrets.DEPLOY_PATH }}/dist/.env && \
             cd ${{ secrets.DEPLOY_PATH }}/dist && \
             pm2 delete dz_artisan_server || true && \

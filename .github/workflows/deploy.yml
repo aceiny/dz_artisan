@@ -1,32 +1,43 @@
 name: Deploy to VPS
+
 on:
   push:
     branches: [ main ]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: 'npm'
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-      
+
       - name: Deploy and restart application
         run: |
-          # Copy source files to the VPS
+          # Copy the dist folder to the VPS
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
-            --exclude='node_modules' \
-            --exclude='dist' \
-            ./ \
+            dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.DEPLOY_PATH }}/
-          
-          # Install, build and restart on the VPS
+
+          # Setup environment variables and restart the app with PM2
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.VPS_HOST }} "\
             export NVM_DIR=\$HOME/.nvm && \
             source \$NVM_DIR/nvm.sh && \

@@ -19,6 +19,7 @@ jobs:
 
       - name: Install dependencies and build
         run: |
+          npm cache clean --force
           npm install
           npm run build
 

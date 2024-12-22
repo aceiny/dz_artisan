@@ -9,7 +9,6 @@ import { MailService } from 'src/mail/mail.service';
 import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
 import * as requestIp from 'request-ip';
-import { ToastClassName } from 'react-toastify';
 @Injectable()
 export class UserService {
   constructor(

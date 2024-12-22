@@ -27,6 +27,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.4.15",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^8.1.0",
     "@nestjs/throttler": "^6.3.0",
@@ -49,6 +50,7 @@
     "reflect-metadata": "^0.2.0",
     "request-ip": "^3.3.0",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {

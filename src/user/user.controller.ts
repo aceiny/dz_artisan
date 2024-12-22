@@ -17,8 +17,14 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { jwtPayload } from 'src/auth/types/payload.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -37,9 +43,10 @@ export class UserController {
   })
   @Post('/signup')
   async signup(
-    @Res({passthrough : true}) res : Response ,
-    @Body() signupUserDto: SignupUserDto) {
-    const data = await this.userService.signup(signupUserDto , res);
+    @Res({ passthrough: true }) res: Response,
+    @Body() signupUserDto: SignupUserDto,
+  ) {
+    const data = await this.userService.signup(signupUserDto, res);
     return {
       message: 'User signed up successfully',
       status: HttpStatus.CREATED,
@@ -61,13 +68,30 @@ export class UserController {
   async signin(
     @Body() signinUserDto: SigninUserDto,
     @Req() req: Request,
-    @Res({passthrough : true}) res : Response ,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const data = await this.userService.signin(signinUserDto, req , res);
+    const data = await this.userService.signin(signinUserDto, req, res);
     return {
       message: 'User signed in successfully',
       status: HttpStatus.OK,
     };
+  }
+
+  @Get('/google')
+  @UseGuards(AuthGuard('google'))
+  googleLogin() {
+    // This route will redirect to Google's OAuth 2.0 server
+  }
+
+  @Get('/google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleLoginRedirect(
+    @GetUser() user: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    await this.userService.validateGoogleAuth(user, res);
+    return res.redirect(process.env.FRONTEND_URL);
   }
 
   @ApiOperation({
@@ -125,8 +149,11 @@ export class UserController {
   @ApiBearerAuth('Refresh')
   @Get('/refresh-token')
   @UseGuards(JwtRefreshGuard)
-  async refreshToken(@GetUser() user: jwtPayload , @Res({passthrough : true}) res : Response) {
-    const data = await this.userService.refreshToken(user , res);
+  async refreshToken(
+    @GetUser() user: jwtPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const data = await this.userService.refreshToken(user, res);
     return {
       message: 'Token Refreshed',
       status: HttpStatus.OK,

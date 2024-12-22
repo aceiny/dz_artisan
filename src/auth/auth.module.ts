@@ -5,6 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
+import { GoogleStrategy } from './strategy/google.strategy';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
   imports: [
@@ -12,8 +14,15 @@ import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
       defaultStrategy: ['jwt-access', 'jwt-refresh'],
     }),
     JwtModule.register({}),
+    DatabaseModule,
   ],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    RolesGuard,
+  ],
   exports: [
     JwtStrategy,
     JwtRefreshStrategy,

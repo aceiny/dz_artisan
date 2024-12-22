@@ -68,7 +68,6 @@ export class CertificationService {
     userId: string,
     updateCertificationDto: UpdateCertificationDto,
   ) {
-    console.log(updateCertificationDto, userId, certificationId);
     const query = `
     UPDATE certifications SET name = $1, issuing_authority = $2, issue_date = $3, expiry_date = $4, document_url = $5
     WHERE certification_id = $6 AND user_id = $7
@@ -84,7 +83,6 @@ export class CertificationService {
       userId,
     ];
     const certafication = (await this.databaseService.query(query, values))[0];
-    console.log(certafication);
     if (!certafication) {
       throw new NotFoundException('Certification Not Found');
     }

@@ -49,7 +49,7 @@ export class UserService {
     const users = await this.databaseService.query(query);
     return users;
   }
-  async signup(signupUserDto: SignupUserDto , res : Response) {
+  async signup(signupUserDto: SignupUserDto, res: Response) {
     if (await this.checkUserExists(signupUserDto.email))
       throw new ConflictException('Email Already Taken');
     const query =
@@ -65,7 +65,6 @@ export class UserService {
       signupUserDto.wilaya,
     ];
     const user = (await this.databaseService.query(query, values))[0];
-    console.log(user);
     if (!user) throw new ConflictException('User not created');
     const mailDto = {
       to: user.email,
@@ -78,19 +77,19 @@ export class UserService {
       },
     };
     //await this.mailService.sendWelcomeMail(mailDto);
-    const access_token =  await this.authService.generateAccessToken({
+    const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,
-    })
+    });
     const refresh_token = await this.authService.generateRefreshToken({
       id: user.user_id,
       role: user.role,
-    })
-    this.authService.setCookies(res , access_token , refresh_token)
-    return true
+    });
+    this.authService.setCookies(res, access_token, refresh_token);
+    return true;
   }
 
-  async signin(signinUserDto: SigninUserDto, req: Request , res : Response) {
+  async signin(signinUserDto: SigninUserDto, req: Request, res: Response) {
     const user = await this.findUserByEmail(signinUserDto.email);
     const password = user.password;
     const is_match = await bcrypt.compare(signinUserDto.password, password);
@@ -114,16 +113,29 @@ export class UserService {
       },
     };
     //await this.mailService.sendNewLoginMail(mailDto);
-    const access_token =  await this.authService.generateAccessToken({
+    const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,
-    })
+    });
     const refresh_token = await this.authService.generateRefreshToken({
       id: user.user_id,
       role: user.role,
-    })
-    this.authService.setCookies(res , access_token , refresh_token)
-    return true
+    });
+    this.authService.setCookies(res, access_token, refresh_token);
+    return true;
+  }
+
+  async validateGoogleAuth(user: any, res: Response) {
+    const access_token = await this.authService.generateAccessToken({
+      id: user.user_id,
+      role: user.role,
+    });
+    const refresh_token = await this.authService.generateRefreshToken({
+      id: user.user_id,
+      role: user.role,
+    });
+    this.authService.setCookies(res, access_token, refresh_token);
+    return true;
   }
   async findOne(userId: string) {
     const query = `
@@ -145,12 +157,12 @@ export class UserService {
     if (user.length === 0) throw new ConflictException('User Not Found');
     return user[0];
   }
-  async refreshToken(payload: jwtPayload , res : Response) {
+  async refreshToken(payload: jwtPayload, res: Response) {
     const new_access_token = await this.authService.generateAccessToken({
       id: payload.id,
       role: payload.role,
-    })
-    this.authService.setCookies(res , new_access_token)
-    return true
+    });
+    this.authService.setCookies(res, new_access_token);
+    return true;
   }
 }

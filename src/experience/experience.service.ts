@@ -57,7 +57,6 @@ export class ExperienceService {
     userId: string,
     updateExperienceDto: UpdateExperienceDto,
   ) {
-    console.log(updateExperienceDto, userId, experienceId);
     const query = `
     UPDATE experiences SET title = $1, description = $2, completion_date = $3
     WHERE experience_id = $4 AND user_id = $5

@@ -52,7 +52,6 @@ export class MailService {
     }
   }
   async sendNewLoginMail(sendMailDto: SendMailDto): Promise<boolean> {
-    console.log(sendMailDto);
     const mailOptions = {
       from: this.mail_from,
       to: sendMailDto.to,

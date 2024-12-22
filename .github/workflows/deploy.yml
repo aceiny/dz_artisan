@@ -35,6 +35,7 @@ jobs:
             npm install && \
             npm run build && \
             echo '${{ secrets.PRODUCTION_ENV }}' > dist/.env && \
+            cd ${{ secrets.DEPLOY_PATH }}/dist && \
             pm2 delete dz_artisan_server || true && \
-            pm2 start dist/main.js --name dz_artisan_server \
+            pm2 start main.js --name dz_artisan_server \
           "

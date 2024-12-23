@@ -1,11 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { jwtPayload } from './types/payload.type';
 import { JwtConfig, JwtRefreshConfig } from 'src/config/jwt.config';
 import { Response } from 'express';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { User } from 'src/user/dto/user.schema';
+import { JwtPayload } from './types/payload.type';
 
 @Injectable()
 export class AuthService {
@@ -54,14 +55,27 @@ export class AuthService {
     response.clearCookie(process.env.JWT_REFRESH_COOKIE_NAME);
     return true;
   }
-  async generateAccessToken(payload: jwtPayload): Promise<string> {
+  async generateAccessToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, JwtConfig);
   }
 
-  async generateRefreshToken(payload: jwtPayload): Promise<string> {
+  async generateRefreshToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, JwtRefreshConfig);
   }
 
+  async findUser(userId: string) : Promise<User> {
+    console.log(userId  , "jwt")
+      const query = `
+      SELECT 
+        *
+      FROM user_info 
+      WHERE user_id = $1
+      `;
+      const values = [userId];
+      const user = await this.databaseService.query(query, values);
+      if (user.length === 0) throw new ConflictException('User Not Found');
+      return user[0];
+    }
   async validateUserWithGoogle(user: any) {
     const find_user_query = `SELECT * FROM users WHERE email = '${user.email}'`;
     const fetched_user = (await this.databaseService.query(find_user_query))[0];

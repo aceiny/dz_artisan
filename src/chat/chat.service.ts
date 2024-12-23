@@ -1,15 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { JwtConfig } from 'src/config/jwt.config';
-import { jwtPayload } from 'src/auth/types/payload.type';
 import { WsException } from '@nestjs/websockets';
+import { JwtPayload } from 'src/auth/types/payload.type';
 
 @Injectable()
 export class ChatService {
@@ -51,12 +47,13 @@ export class ChatService {
     return chat;
   }
 
-  async authenticateClient(client: Socket): Promise<jwtPayload> {
+  async authenticateClient(client: Socket): Promise<JwtPayload> {
     // authenticate user on first connexion
     try {
       const token = client.handshake.headers.authorization?.split(' ')[1]; // Expect "Bearer <token>"
       if (!token) throw new WsException('Token missing');
-      const payload: jwtPayload = this.jwtService.verify(token, JwtConfig);
+      const payload: JwtPayload = this.jwtService.verify(token, JwtConfig);
+      // maybe add user fetching 
       return payload;
     } catch (error) {
       console.error(`Unauthorized connection attempt: ${error.message}`);

@@ -5,9 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateCertificationDto } from './dto/create-certification.dto';
 import { UpdateCertificationDto } from './dto/update-certification.dto';
-import { jwtPayload } from 'src/auth/types/payload.type';
 import { DatabaseService } from 'src/database/database.service';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CertificationService {
@@ -16,7 +14,7 @@ export class CertificationService {
   //certafication url is online
   async create(
     createCertificationDto: CreateCertificationDto,
-    user: jwtPayload,
+    userId: string,
   ) {
     if (
       new Date(createCertificationDto.issue_date) >=
@@ -31,7 +29,7 @@ export class CertificationService {
      RETURNING *
     `;
     const values = [
-      user.id,
+      userId,
       createCertificationDto.name,
       createCertificationDto.issuing_authority,
       createCertificationDto.issue_date,

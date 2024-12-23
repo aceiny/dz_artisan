@@ -15,8 +15,8 @@ import { CreateCertificationDto } from './dto/create-certification.dto';
 import { UpdateCertificationDto } from './dto/update-certification.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { jwtPayload } from 'src/auth/types/payload.type';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/user/dto/user.schema';
 
 @ApiTags('Certification')
 @Controller('certification')
@@ -40,11 +40,11 @@ export class CertificationController {
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() createCertificationDto: CreateCertificationDto,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.certificationService.create(
       createCertificationDto,
-      user,
+      user.user_id,
     );
     return {
       message: 'Certification Created Successfully',
@@ -63,8 +63,8 @@ export class CertificationController {
   })
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAllByUserId(@GetUser() user: jwtPayload) {
-    const data = await this.certificationService.findAllByUserId(user.id);
+  async findAllByUserId(@GetUser() user: User) {
+    const data = await this.certificationService.findAllByUserId(user.user_id);
     return {
       message: 'Certifications Fetched Successfully',
       status: HttpStatus.OK,
@@ -89,7 +89,7 @@ export class CertificationController {
   @UseGuards(JwtAuthGuard)
   async findOne(
     @Param('certificationId', new ParseUUIDPipe()) certificationId: string,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.certificationService.findOne(certificationId);
     return {
@@ -117,11 +117,11 @@ export class CertificationController {
   async update(
     @Param('certificationId', new ParseUUIDPipe()) certificationId: string,
     @Body() updateCertificationDto: UpdateCertificationDto,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.certificationService.update(
       certificationId,
-      user.id,
+      user.user_id,
       updateCertificationDto,
     );
     return {
@@ -148,11 +148,11 @@ export class CertificationController {
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('certificationId', new ParseUUIDPipe()) certificationId: string,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.certificationService.remove(
       certificationId,
-      user.id,
+      user.user_id,
     );
     return {
       message: 'Certification Deleted Successfully',

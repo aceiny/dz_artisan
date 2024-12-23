@@ -6,11 +6,8 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { UserRole } from './user.schema';
 
-enum UserRole{
-  client = 'client',
-  artisan = 'artisan',
-}
 export class SignupUserDto {
   @ApiProperty({
     description: 'full name of the user',

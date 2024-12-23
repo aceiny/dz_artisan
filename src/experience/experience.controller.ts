@@ -17,11 +17,11 @@ import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { jwtPayload } from 'src/auth/types/payload.type';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { MulterConfig } from 'src/config/multer.config';
 import { ParseFormDataInterceptor } from 'src/common/form-data.interceptor';
 import { ApiOperation } from '@nestjs/swagger';
+import { User } from 'src/user/dto/user.schema';
 
 @Controller('experience')
 export class ExperienceController {
@@ -45,12 +45,12 @@ export class ExperienceController {
   async create(
     @Body() createExperienceDto: CreateExperienceDto,
     @UploadedFiles() attachments: Express.Multer.File[],
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.experienceService.create(
       createExperienceDto,
       attachments,
-      user.id,
+      user.user_id,
     );
     return {
       message: 'Experience Created Successfully',
@@ -69,8 +69,8 @@ export class ExperienceController {
   })
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAllByUserId(@GetUser() user: jwtPayload) {
-    const data = await this.experienceService.findAllByUserId(user.id);
+  async findAllByUserId(@GetUser() user: User) {
+    const data = await this.experienceService.findAllByUserId(user.user_id);
     return {
       message: 'Experiences Fetched Successfully',
       status: HttpStatus.OK,
@@ -120,11 +120,11 @@ export class ExperienceController {
   async update(
     @Param('experienceId', new ParseUUIDPipe()) experienceId: string,
     @Body() updateExperienceDto: UpdateExperienceDto,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
     const data = await this.experienceService.update(
       experienceId,
-      user.id,
+      user.user_id,
       updateExperienceDto,
     );
     return {
@@ -150,9 +150,9 @@ export class ExperienceController {
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('experienceId', new ParseUUIDPipe()) experienceId: string,
-    @GetUser() user: jwtPayload,
+    @GetUser() user: User,
   ) {
-    const data = await this.experienceService.remove(experienceId, user.id);
+    const data = await this.experienceService.remove(experienceId, user.user_id);
     return {
       message: 'Experience Deleted Successfully',
       status: HttpStatus.OK,

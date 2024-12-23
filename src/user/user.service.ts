@@ -4,7 +4,7 @@ import { SignupUserDto } from './dto/signup-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { jwtPayload } from 'src/auth/types/payload.type';
+import { JwtPayload } from 'src/auth/types/payload.type';
 import { MailService } from 'src/mail/mail.service';
 import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
@@ -139,7 +139,7 @@ export class UserService {
     if (user.length === 0) throw new ConflictException('User Not Found');
     return user[0];
   }
-  async refreshToken(payload: jwtPayload, res: Response) {
+  async refreshToken(payload: JwtPayload, res: Response) {
     const new_access_token = await this.authService.generateAccessToken({
       id: payload.id,
       role: payload.role,

@@ -14,7 +14,7 @@ import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { jwtPayload } from 'src/auth/types/payload.type';
+import { JwtPayload } from 'src/auth/types/payload.type';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/guards/jwt-refresh.guard';
 import {
@@ -25,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from './dto/user.schema';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -126,8 +127,8 @@ export class UserController {
   @ApiBearerAuth('Bearer')
   @Get('/me')
   @UseGuards(JwtAuthGuard)
-  async findUserProfile(@GetUser() user: jwtPayload) {
-    const data = await this.userService.findOne(user.id);
+  async findUserProfile(@GetUser() user: User) {
+    const data = user;
     return {
       message: 'User Found',
       status: HttpStatus.OK,
@@ -150,7 +151,7 @@ export class UserController {
   @Get('/refresh-token')
   @UseGuards(JwtRefreshGuard)
   async refreshToken(
-    @GetUser() user: jwtPayload,
+    @GetUser() user: JwtPayload,
     @Res({ passthrough: true }) res: Response,
   ) {
     const data = await this.userService.refreshToken(user, res);

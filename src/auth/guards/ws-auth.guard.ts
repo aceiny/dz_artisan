@@ -15,8 +15,14 @@ export class WsAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const client: Socket = context.switchToWs().getClient<Socket>();
-      const token = this.extractTokenFromCookie(client, process.env.JWT_COOKIE_NAME);
-      const refreshToken = this.extractTokenFromCookie(client, process.env.JWT_REFRESH_COOKIE_NAME);
+      const token = this.extractTokenFromCookie(
+        client,
+        process.env.JWT_COOKIE_NAME,
+      );
+      const refreshToken = this.extractTokenFromCookie(
+        client,
+        process.env.JWT_REFRESH_COOKIE_NAME,
+      );
 
       if (!token) {
         throw new WsException('Unauthorized - No token');
@@ -29,15 +35,18 @@ export class WsAuthGuard implements CanActivate {
       } catch (err) {
         if (err.name === 'TokenExpiredError' && refreshToken) {
           try {
-            const refreshPayload = this.jwtService.verify(refreshToken, JwtRefreshConfig);
+            const refreshPayload = this.jwtService.verify(
+              refreshToken,
+              JwtRefreshConfig,
+            );
             const newAccessToken = await this.authService.generateAccessToken({
               id: refreshPayload.id,
               role: refreshPayload.role,
             });
-            
+
             // Send new access token to client
             client.emit('token:refresh', { token: newAccessToken });
-            
+
             context.switchToWs().getData().user = refreshPayload;
             return true;
           } catch {
@@ -51,14 +60,18 @@ export class WsAuthGuard implements CanActivate {
     }
   }
 
-  private extractTokenFromCookie(client: Socket, cookieName: string): string | undefined {
-    const cookies = client.handshake.headers.cookie?.split(';')
+  private extractTokenFromCookie(
+    client: Socket,
+    cookieName: string,
+  ): string | undefined {
+    const cookies = client.handshake.headers.cookie
+      ?.split(';')
       .reduce((acc, cookie) => {
         const [key, value] = cookie.trim().split('=');
         acc[key] = value;
         return acc;
       }, {});
-    
+
     return cookies?.[cookieName];
   }
 }

@@ -6,6 +6,7 @@ import { GlobalExceptionFilter } from './common/global-expection.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import * as cookieParser from 'cookie-parser';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 dotenv.config();
 async function bootstrap() {
@@ -25,6 +26,10 @@ async function bootstrap() {
     origin: true,
     credentials: true,
   });
+
+  // enable websocket
+  const server = app.getHttpServer();
+  app.useWebSocketAdapter(new IoAdapter(server));
 
   // enable cookie parser
   app.use(cookieParser());

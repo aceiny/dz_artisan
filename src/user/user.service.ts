@@ -10,12 +10,14 @@ import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
 import * as requestIp from 'request-ip';
 import { CreateUserProfileDto } from './dto/create-user-profile.dto';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 @Injectable()
 export class UserService {
   constructor(
+    @InjectQueue('email-queue') private emailQueue: Queue,
     private readonly databaseService: DatabaseService,
     private readonly authService: AuthService,
-    private readonly mailService: MailService,
   ) {}
   async checkUserExistsByEmail(email: string): Promise<boolean> {
     if (!email) throw new ConflictException('No Email Provided');
@@ -75,7 +77,11 @@ export class UserService {
         phone_number: user.phone_number,
       },
     };
-    await this.mailService.sendWelcomeMail(mailDto);
+    await this.emailQueue.add(
+      'welcome-email',
+      { mailDto },
+      { attempts: 3, backoff: { type: 'exponential', delay: 1000 } },
+    );
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,
@@ -111,7 +117,11 @@ export class UserService {
         ip_address: ip_address,
       },
     };
-    await this.mailService.sendNewLoginMail(mailDto);
+    await this.emailQueue.add(
+      'new-login',
+      { mailDto },
+      { attempts: 3, backoff: { type: 'exponential', delay: 1000 } },
+    );
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,

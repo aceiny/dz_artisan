@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ExperienceModule } from './experience/experience.module';
 import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MessageModule } from './message/message.module';
     ExperienceModule,
     ChatModule,
     MessageModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [

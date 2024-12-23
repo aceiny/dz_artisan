@@ -102,7 +102,8 @@ export class UserController {
   }
 
   @ApiOperation({
-    summary: 'Complete user profile , form data , will add profile picture if provided otherwise will keep it to null',
+    summary:
+      'Complete user profile , form data , will add profile picture if provided otherwise will keep it to null',
     responses: {
       200: {
         description: 'User profile completed',

@@ -9,6 +9,7 @@ import { MailService } from 'src/mail/mail.service';
 import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
 import * as requestIp from 'request-ip';
+import { CreateUserProfileDto } from './dto/create-user-profile.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -16,10 +17,18 @@ export class UserService {
     private readonly authService: AuthService,
     private readonly mailService: MailService,
   ) {}
-  async checkUserExists(email: string) {
+  async checkUserExistsByEmail(email: string): Promise<boolean> {
     if (!email) throw new ConflictException('No Email Provided');
     const query = 'SELECT email FROM users WHERE email = $1';
     const values = [email];
+    const user = await this.databaseService.query(query, values);
+    if (user.length === 0) return false;
+    return true;
+  }
+  async checkUserExistsByUsername(username: string): Promise<boolean> {
+    if (!username) throw new ConflictException('No Username Provided');
+    const query = 'SELECT username FROM users WHERE username = $1';
+    const values = [username];
     const user = await this.databaseService.query(query, values);
     if (user.length === 0) return false;
     return true;
@@ -42,7 +51,7 @@ export class UserService {
     return users;
   }
   async signup(signupUserDto: SignupUserDto, res: Response) {
-    if (await this.checkUserExists(signupUserDto.email))
+    if (await this.checkUserExistsByEmail(signupUserDto.email))
       throw new ConflictException('Email Already Taken');
     const query =
       'INSERT INTO users (full_name , email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
@@ -52,7 +61,7 @@ export class UserService {
       signupUserDto.full_name,
       signupUserDto.email,
       password_hash,
-      signupUserDto.role
+      signupUserDto.role,
     ];
     const user = (await this.databaseService.query(query, values))[0];
     if (!user) throw new ConflictException('User not created');
@@ -126,6 +135,56 @@ export class UserService {
     });
     this.authService.setCookies(res, access_token, refresh_token);
     return true;
+  }
+
+  async completeUserProfile(
+    userId: string,
+    createUserProfileDto: CreateUserProfileDto,
+    profile_picture?: Express.Multer.File,
+  ) {
+    if (await this.checkUserExistsByUsername(createUserProfileDto.username)) {
+      throw new ConflictException('Username already taken');
+    }
+
+    const query = profile_picture
+      ? `
+        UPDATE users SET 
+            username = $1,
+            birthday = $2,
+            employment_status = $3,
+            bio = $4,
+            profile_picture = $5
+        WHERE user_id = $6
+        RETURNING *
+        `
+      : `
+        UPDATE users SET 
+            username = $1,
+            birthday = $2,
+            employment_status = $3,
+            bio = $4
+        WHERE user_id = $5
+        RETURNING *
+        `;
+    const values = profile_picture
+      ? [
+          createUserProfileDto.username,
+          createUserProfileDto.birthday,
+          createUserProfileDto.employment_status,
+          createUserProfileDto.bio || null,
+          `${process.env.BACKEND_URL}/uploads/${profile_picture.filename}`,
+          userId,
+        ]
+      : [
+          createUserProfileDto.username,
+          createUserProfileDto.birthday,
+          createUserProfileDto.employment_status,
+          createUserProfileDto.bio || null,
+          userId,
+        ];
+    const user = (await this.databaseService.query(query, values))[0];
+    if (!user) throw new ConflictException('User Profile not updated');
+    return user;
   }
   async findOne(userId: string) {
     const query = `

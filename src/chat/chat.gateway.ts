@@ -21,18 +21,18 @@ export class ChatGateway {
   // Handle connection and authentication
   async handleConnection(client: Socket) {
     try {
-          // Verify JWT and extract userId
-    const user = await this.chatService.authenticateClient(client);
+      // Verify JWT and extract userId
+      const user = await this.chatService.authenticateClient(client);
 
-    // Store userId in client data
-    client.data.userId = user.id;
-    this.connectedClients.set(client.id, user.id);
+      // Store userId in client data
+      client.data.userId = user.id;
+      this.connectedClients.set(client.id, user.id);
 
-    // join user's rooms to get all new messsages in those rooms 
-    const user_chats = await this.chatService.findAllChatsByUser(user.id);
-    user_chats.forEach((chat) => {
-      client.join(chat.chat_id);
-    });
+      // join user's rooms to get all new messsages in those rooms
+      const user_chats = await this.chatService.findAllChatsByUser(user.id);
+      user_chats.forEach((chat) => {
+        client.join(chat.chat_id);
+      });
     } catch (error) {
       console.error(`Unauthorized connection attempt: ${error.message}`);
       client.disconnect();

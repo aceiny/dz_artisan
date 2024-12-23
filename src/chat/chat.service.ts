@@ -53,7 +53,7 @@ export class ChatService {
       const token = client.handshake.headers.authorization?.split(' ')[1]; // Expect "Bearer <token>"
       if (!token) throw new WsException('Token missing');
       const payload: JwtPayload = this.jwtService.verify(token, JwtConfig);
-      // maybe add user fetching 
+      // maybe add user fetching
       return payload;
     } catch (error) {
       console.error(`Unauthorized connection attempt: ${error.message}`);

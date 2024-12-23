@@ -9,6 +9,8 @@ import {
   UseGuards,
   Req,
   Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
@@ -26,6 +28,10 @@ import {
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './dto/user.schema';
+import { CreateUserProfileDto } from './dto/create-user-profile.dto';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { MulterConfig } from 'src/config/multer.config';
+import { ParseFormDataInterceptor } from 'src/common/form-data.interceptor';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -95,6 +101,38 @@ export class UserController {
     return res.redirect(process.env.FRONTEND_URL);
   }
 
+  @ApiOperation({
+    summary: 'Complete user profile , form data , will add profile picture if provided otherwise will keep it to null',
+    responses: {
+      200: {
+        description: 'User profile completed',
+      },
+      401: {
+        description: 'Unauthorized , Invalid Token',
+      },
+    },
+  })
+  @UseGuards(JwtAuthGuard)
+  @Post('/complete-profile')
+  @UseInterceptors(
+    FileInterceptor('profile_picture', MulterConfig),
+    ParseFormDataInterceptor,
+  )
+  async completeUserProfile(
+    @Body() createUserProfileDto: CreateUserProfileDto,
+    @UploadedFile() profile_picture: Express.Multer.File,
+    @GetUser() user: any,
+  ) {
+    const data = await this.userService.completeUserProfile(
+      user.user_id,
+      createUserProfileDto,
+      profile_picture,
+    );
+    return {
+      message: 'User profile completed',
+      status: HttpStatus.OK,
+    };
+  }
   @ApiOperation({
     summary: 'Get all users',
     responses: {

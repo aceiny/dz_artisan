@@ -19,7 +19,6 @@ export class SignupUserDto {
   @IsNotEmpty()
   full_name: string;
 
-
   @ApiProperty({
     description: 'email of the user',
     type: String,
@@ -46,5 +45,4 @@ export class SignupUserDto {
   })
   @IsEnum(UserRole)
   role: UserRole;
-  
 }

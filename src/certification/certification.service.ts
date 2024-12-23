@@ -12,10 +12,7 @@ export class CertificationService {
   constructor(private databaseService: DatabaseService) {}
 
   //certafication url is online
-  async create(
-    createCertificationDto: CreateCertificationDto,
-    userId: string,
-  ) {
+  async create(createCertificationDto: CreateCertificationDto, userId: string) {
     if (
       new Date(createCertificationDto.issue_date) >=
       new Date(createCertificationDto.expiry_date)

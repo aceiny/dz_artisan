@@ -152,7 +152,10 @@ export class ExperienceController {
     @Param('experienceId', new ParseUUIDPipe()) experienceId: string,
     @GetUser() user: User,
   ) {
-    const data = await this.experienceService.remove(experienceId, user.user_id);
+    const data = await this.experienceService.remove(
+      experienceId,
+      user.user_id,
+    );
     return {
       message: 'Experience Deleted Successfully',
       status: HttpStatus.OK,

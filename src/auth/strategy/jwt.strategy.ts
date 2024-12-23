@@ -7,9 +7,7 @@ import { JwtPayload } from '../types/payload.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
-  constructor(
-    private readonly authService: AuthService,
-  ) {
+  constructor(private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
@@ -23,6 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
   }
 
   async validate(req: Request, payload: JwtPayload) {
-    return this.authService.findUser(payload.id);
+    return this.authService.findUser(payload.id, req);
   }
 }

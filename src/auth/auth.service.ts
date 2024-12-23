@@ -1,7 +1,12 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtConfig, JwtRefreshConfig } from 'src/config/jwt.config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -14,6 +19,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly databaseService: DatabaseService,
   ) {}
+
+  private readonly allowed_routes = [
+    { url: /^\/user\/complete-profile$/, method: 'POST' },
+    ,
+  ];
 
   private generateRandomPassword(length: number = 16): string {
     return (
@@ -63,19 +73,25 @@ export class AuthService {
     return this.jwtService.signAsync(payload, JwtRefreshConfig);
   }
 
-  async findUser(userId: string) : Promise<User> {
-    console.log(userId  , "jwt")
-      const query = `
+  async findUser(userId: string, req: Request): Promise<User> {
+    const query = `
       SELECT 
         *
       FROM user_info 
       WHERE user_id = $1
       `;
-      const values = [userId];
-      const user = await this.databaseService.query(query, values);
-      if (user.length === 0) throw new ConflictException('User Not Found');
-      return user[0];
-    }
+    const values = [userId];
+    const user: User = (await this.databaseService.query(query, values))[0];
+    if (!user) throw new ConflictException('User Not Found');
+    console.log(req.path);
+    const is_allowed_route = this.allowed_routes.some(
+      (route) => route.url.test(req.path) && req.method === route.method,
+    );
+
+    if (is_allowed_route) return user;
+    if (!user.username) throw new BadRequestException('User Profile Not set');
+    return user;
+  }
   async validateUserWithGoogle(user: any) {
     const find_user_query = `SELECT * FROM users WHERE email = '${user.email}'`;
     const fetched_user = (await this.databaseService.query(find_user_query))[0];

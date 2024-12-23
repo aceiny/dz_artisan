@@ -13,6 +13,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ServerStaticConfig } from './config/server-static.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ExperienceModule } from './experience/experience.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ExperienceModule } from './experience/experience.module';
     FileModule,
     MailModule,
     ExperienceModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [

@@ -76,7 +76,7 @@ export class UserService {
         phone_number: user.phone_number,
       },
     };
-    //await this.mailService.sendWelcomeMail(mailDto);
+    await this.mailService.sendWelcomeMail(mailDto);
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,
@@ -112,7 +112,7 @@ export class UserService {
         ip_address: ip_address,
       },
     };
-    //await this.mailService.sendNewLoginMail(mailDto);
+    await this.mailService.sendNewLoginMail(mailDto);
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,

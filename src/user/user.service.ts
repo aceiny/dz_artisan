@@ -35,16 +35,8 @@ export class UserService {
   async findAll() {
     const query = `
     SELECT 
-      user_id,
-      full_name,
-      email,
-      phone_number,
-      address,
-      wilaya,
-      role,
-      created_at,
-      updated_at
-    FROM users 
+      *
+    FROM user_info 
     `;
     const users = await this.databaseService.query(query);
     return users;
@@ -53,16 +45,14 @@ export class UserService {
     if (await this.checkUserExists(signupUserDto.email))
       throw new ConflictException('Email Already Taken');
     const query =
-      'INSERT INTO users (full_name , email, password, phone_number, address , wilaya) VALUES ($1, $2, $3, $4, $5 , $6) RETURNING *';
+      'INSERT INTO users (full_name , email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
     const hash_salt = 12;
     const password_hash = await bcrypt.hash(signupUserDto.password, hash_salt);
     const values = [
       signupUserDto.full_name,
       signupUserDto.email,
       password_hash,
-      signupUserDto.phone_number,
-      signupUserDto.address,
-      signupUserDto.wilaya,
+      signupUserDto.role
     ];
     const user = (await this.databaseService.query(query, values))[0];
     if (!user) throw new ConflictException('User not created');
@@ -140,16 +130,8 @@ export class UserService {
   async findOne(userId: string) {
     const query = `
     SELECT 
-      user_id,
-      full_name,
-      email,
-      phone_number,
-      address,
-      wilaya,
-      role,
-      created_at,
-      updated_at
-    FROM users 
+      *
+    FROM user_info 
     WHERE user_id = $1
     `;
     const values = [userId];

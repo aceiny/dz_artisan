@@ -69,16 +69,13 @@ export class AuthService {
       return fetched_user;
     }
     const insert_user_query =
-      'INSERT INTO users (full_name , email, password, phone_number, address , wilaya , email_verfied) VALUES ($1, $2, $3, $4, $5 , $6 , $7) RETURNING *';
+      'INSERT INTO users (full_name , email, password, email_verfied) VALUES ($1, $2, $3, $4,) RETURNING *';
     const random_password = this.generateRandomPassword();
     const random_password_hash = await bcrypt.hash(random_password, 12);
     const insert_user_values = [
       user.full_name,
       user.email,
       random_password_hash,
-      '+213xxxxxxxxx',
-      'Not Defined',
-      'Not defined',
       true,
     ];
     const inserted_user = (

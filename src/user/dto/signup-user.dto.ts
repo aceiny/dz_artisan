@@ -1,12 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
-  IsPhoneNumber,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
 
+enum UserRole{
+  client = 'client',
+  artisan = 'artisan',
+}
 export class SignupUserDto {
   @ApiProperty({
     description: 'full name of the user',
@@ -18,14 +22,6 @@ export class SignupUserDto {
   @IsNotEmpty()
   full_name: string;
 
-  @ApiProperty({
-    description: 'phone number of the user',
-    type: String,
-    required: true,
-    example: '+213555555555',
-  })
-  @IsPhoneNumber('DZ')
-  phone_number: string;
 
   @ApiProperty({
     description: 'email of the user',
@@ -46,21 +42,12 @@ export class SignupUserDto {
   password: string;
 
   @ApiProperty({
-    description: 'address of the user',
+    description: 'role of the user',
     type: String,
     required: true,
-    example: 'Cité 1000 logements',
+    example: 'client',
   })
-  @IsString()
-  @IsNotEmpty()
-  address: string;
-
-  @ApiProperty({
-    description: 'wilaya of the user',
-    type: String,
-    required: true,
-    example: 'Oran',
-  })
-  @IsString()
-  wilaya: string;
+  @IsEnum(UserRole)
+  role: UserRole;
+  
 }

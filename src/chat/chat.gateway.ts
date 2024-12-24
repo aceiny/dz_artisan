@@ -16,7 +16,7 @@ import { Socket } from 'socket.io';
 })
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
-  private connectedClients: Map<string, string> = new Map(); // Maps client.id to userId
+  private connectedClients: Map<string, string> = new Map();
 
   // Handle connection and authentication
   async handleConnection(client: Socket) {
@@ -53,9 +53,16 @@ export class ChatGateway {
   async handleMessage(client: any, payload: CreateMessageDto) {
     const userId = client.data.userId;
     if (!userId) throw new WsException('User not connected');
-
+    if(!payload.chat) throw new WsException('Chat not provided');
+    if(!payload.content) throw new WsException('Content not provided');
     //verifies that the user is part of the chat
-    const chat = await this.chatService.findOne(payload.chat, userId);
+    try{
+      const chat = await this.chatService.findOne(payload.chat, userId);
+      if (!chat) throw new WsException('Chat not found');
+    } // catch the not found expection and throw a WsException
+    catch (error) {
+      throw new WsException('Chat not found');
+    }
     const message = await this.chatService.addMessage(
       payload.chat,
       payload.content,

@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID } from 'class-validator';
 
 export class CreateChatDto {
-
   @ApiProperty({
     description: 'User ID of the user',
     type: String,

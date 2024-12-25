@@ -134,10 +134,7 @@ export class UserService {
         ip_address: ip_address,
       },
     };
-    await this.emailQueue.add(
-      'new-login',
-      { mailDto },
-    );
+    await this.emailQueue.add('new-login', { mailDto });
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,
       role: user.role,

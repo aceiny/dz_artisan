@@ -26,21 +26,20 @@ https://drawsql.app/teams/aceiny/diagrams/dz-artisan
 node >= 16.x
 npm >= 8.x
 PostgreSQL >= 14
+Redis >= 6.x
 ```
 
-### Cloning
+### Quick Start 🚀
 
 ```bash
 $ git clone https://github.com/aceiny/dz_artisan.git
+$ cd dz_artisan
+$ npm i -g @nestjs/cli
+$ npm install
+cp .env.example .env    # Configure your environment variables
+$ npm run start:dev
 ```
 
-### Installation
-
-#### This applies to each one of the folders (freelancer dashboard , core app )
-
-```bash
-$ npm i -g @nestjs/cli && npm install
-```
 
 ### Environment Variables
 
@@ -91,6 +90,8 @@ src/
 ├── auth/           # Authorization system, handles user authentication and JWT strategies
 ├── user/           # User management, including artisan and client profiles
 ├── certification/  # Certification system, manages user certifications
+├── experience/     # experience system, manages user experiences
+
 ├── job/            # Job tracking, handles job creation, updates, and status tracking
 ├── Chat/           # Chat system, manages chat and messages between users
 ├── review/         # Review system, handles user reviews and ratings
@@ -102,6 +103,26 @@ src/
 ```
 
 ## Features
+
+### Authentication
+- JWT-based authentication with refresh tokens
+- Role-based access control (Client/Artisan)
+- Google OAuth support
+
+### File Handling
+- Secure file uploads with Multer
+- Support for images, PDFs and documents
+- Size and type validation
+
+### Real-time Features  
+- WebSocket-based chat system
+- Real-time notifications
+- Message status tracking
+
+### Email System
+- Welcome emails
+- Login notifications
+- Queue-based email processing with Bull
 
 ### For Artisans
 
@@ -134,19 +155,45 @@ src/
 - #### Rate Limiting :
   Implement rate limiting to prevent brute-force attacks or denial-of-service attempts.
 
-## Technologies Used
+## Technologies Used 🛠️
 
-- TypeScript
-- Node.js
-- Nest.js
-- class-validator
-- postgresql
-- uuid
-- JWT
-- Passport js
-- bcrypt
-- swagger
-- cookie parser 
+### Core Framework
+- **NestJS** (v10.x) - Progressive Node.js framework
+- **TypeScript** (v5.x) - Type-safe development
+- **Node.js** (v16+) - Runtime environment
+
+### Database & Storage
+- **PostgreSQL** (v14+) - Primary database
+- **Redis** (v6+) - Caching & queue management
+- **TypeORM** - ORM for database operations
+
+### Authentication & Security
+- **JWT** - Token-based authentication
+- **Passport.js** - Authentication middleware
+- **bcrypt** (v5.x) - Password hashing
+- **helmet** - HTTP security headers
+- **throttler** - Rate limiting
+
+### Real-time & Communication
+- **Socket.io** (v4.x) - WebSocket connections
+- **Bull** - Queue management
+- **nodemailer** - Email service
+
+### Validation & Documentation
+- **class-validator** - DTO validation
+- **class-transformer** - Object transformation
+- **Swagger/OpenAPI** - API documentation
+- **cookie-parser** - HTTP cookie parsing
+
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Git** - Version control
+- **Docker** - Containerization
+
+### Testing
+- **Jest** - Unit testing
+- **Supertest** - API testing
 
 ## Contributing
 

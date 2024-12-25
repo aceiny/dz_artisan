@@ -9,7 +9,6 @@ import { EmploymentStatus } from './user.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserProfileDto {
-
   @ApiProperty({
     description: 'Username of the user',
     type: String,
@@ -21,7 +20,7 @@ export class CreateUserProfileDto {
   username: string;
 
   @ApiProperty({
-    description : "User's birthday",
+    description: "User's birthday",
     type: Date,
     required: true,
     example: '1990-01-01',

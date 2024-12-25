@@ -18,7 +18,10 @@ export class EmailQueueProcessor {
       await this.mailService.sendNewLoginMail(mailDto);
       this.logger.debug(`Successfully processed new login email job ${job.id}`);
     } catch (error) {
-      this.logger.error(`Failed to process new login email job ${job.id}:`, error);
+      this.logger.error(
+        `Failed to process new login email job ${job.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -31,7 +34,10 @@ export class EmailQueueProcessor {
       await this.mailService.sendWelcomeMail(mailDto);
       this.logger.debug(`Successfully processed welcome email job ${job.id}`);
     } catch (error) {
-      this.logger.error(`Failed to process welcome email job ${job.id}:`, error);
+      this.logger.error(
+        `Failed to process welcome email job ${job.id}:`,
+        error,
+      );
       throw error;
     }
   }

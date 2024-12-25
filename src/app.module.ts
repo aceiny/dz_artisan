@@ -14,7 +14,6 @@ import { ServerStaticConfig } from './config/server-static.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ExperienceModule } from './experience/experience.module';
 import { ChatModule } from './chat/chat.module';
-import { MessageModule } from './message/message.module';
 import { QueueModule } from './queue/queue.module';
 import { JobModule } from './job/job.module';
 
@@ -30,7 +29,6 @@ import { JobModule } from './job/job.module';
     MailModule,
     ExperienceModule,
     ChatModule,
-    MessageModule,
     QueueModule,
     JobModule,
   ],

@@ -10,6 +10,12 @@ import { prototype } from 'events';
       redis: {
         host: process.env.REDIS_HOST,
         port: 6379,
+        password: process.env.REDIS_PASSWORD,
+        maxRetriesPerRequest: 10,
+        connectTimeout: 10000,
+        retryStrategy: (times: number) => {
+          return Math.min(times * 50, 2000);
+        }
       },
     }),
     BullModule.registerQueue({

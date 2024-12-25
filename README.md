@@ -57,6 +57,7 @@ DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 DB_NAME=your_database_name
 REDIS_HOST=your_redis_host
+REDIS_PASSWORD=your_redis_password
 SMTP_HOST=your_smtp_host
 SMTP_USER=your_smtp_user
 SMTP_PASSWORD=your_smtp_password

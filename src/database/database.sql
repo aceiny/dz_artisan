@@ -97,7 +97,7 @@ CREATE TABLE jobs (
     estimated_duration VARCHAR(100),
     attachments TEXT[],
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Chat System
@@ -105,7 +105,8 @@ CREATE TABLE chats (
     chat_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     user1_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     user2_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT different_users CHECK (user1_id != user2_id)
 );
 
 CREATE TABLE messages (
@@ -114,7 +115,12 @@ CREATE TABLE messages (
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     sent_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    read_at TIMESTAMPTZ
+    read_at TIMESTAMPTZ,
+    CONSTRAINT valid_sender CHECK (user_id IN (
+        SELECT user1_id FROM chats WHERE chat_id = messages.chat_id
+        UNION
+        SELECT user2_id FROM chats WHERE chat_id = messages.chat_id
+    ))
 );
 
 -- Quote System
@@ -148,7 +154,8 @@ CREATE TABLE reviews (
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_job_review UNIQUE (job_id, client_id, artisan_id)
+    CONSTRAINT unique_job_review UNIQUE (job_id, client_id, artisan_id),
+    CONSTRAINT valid_client CHECK (client_id != artisan_id)
 );
 
 -- Triggers

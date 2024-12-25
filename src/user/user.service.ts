@@ -137,7 +137,6 @@ export class UserService {
     await this.emailQueue.add(
       'new-login',
       { mailDto },
-      { attempts: 3, backoff: { type: 'exponential', delay: 1000 } },
     );
     const access_token = await this.authService.generateAccessToken({
       id: user.user_id,

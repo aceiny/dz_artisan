@@ -165,7 +165,7 @@ src/
 ### Database & Storage
 - **PostgreSQL** (v14+) - Primary database
 - **Redis** (v6+) - Caching & queue management
-- **TypeORM** - ORM for database operations
+- **Serve Static** (v4+)  Static file serving
 
 ### Authentication & Security
 - **JWT** - Token-based authentication
@@ -193,7 +193,6 @@ src/
 
 ### Testing
 - **Jest** - Unit testing
-- **Supertest** - API testing
 
 ## Contributing
 

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: dz_artisan_api
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=50.85.208.244
+      - REDIS_HOST=redis
+    volumes:
+      - ./static-files:/app/static-files:rw
+      - .env:/app/dist/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+    depends_on:
+      - redis
+
+  redis:
+    container_name: dz_artisan_redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

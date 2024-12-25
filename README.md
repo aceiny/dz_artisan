@@ -36,7 +36,7 @@ $ git clone https://github.com/aceiny/dz_artisan.git
 $ cd dz_artisan
 $ npm i -g @nestjs/cli
 $ npm install
-cp .env.example .env    # Configure your environment variables
+$ cp .env.example .env    # Configure your environment variables
 $ npm run start:dev
 ```
 
@@ -44,6 +44,7 @@ $ npm run start:dev
 ### Environment Variables
 
 ```bash
+NODE_ENV=development | production 
 JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRE_IN=1d
 JWT_COOKIE_NAME=token_cookie_name
@@ -55,6 +56,7 @@ DB_PORT=your_database_port
 DB_USER=your_database_user
 DB_PASSWORD=your_database_password
 DB_NAME=your_database_name
+REDIS_HOST=your_redis_host
 SMTP_HOST=your_smtp_host
 SMTP_USER=your_smtp_user
 SMTP_PASSWORD=your_smtp_password
@@ -91,7 +93,6 @@ src/
 ├── user/           # User management, including artisan and client profiles
 ├── certification/  # Certification system, manages user certifications
 ├── experience/     # experience system, manages user experiences
-
 ├── job/            # Job tracking, handles job creation, updates, and status tracking
 ├── Chat/           # Chat system, manages chat and messages between users
 ├── review/         # Review system, handles user reviews and ratings

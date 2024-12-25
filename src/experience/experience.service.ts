@@ -42,7 +42,7 @@ export class ExperienceService {
 
   async findOne(experienceId: string) {
     const query = `
-        SELECT * FROM experiences WHERE experience_id  = $1  
+        SELECT * FROM experiences WHERE experience_id = $1  
         `;
     const values = [experienceId];
     const experience = (await this.databaseService.query(query, values))[0];

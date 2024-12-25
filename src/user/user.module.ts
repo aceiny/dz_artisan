@@ -6,7 +6,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { QueueModule } from 'src/queue/queue.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule , QueueModule],
+  imports: [DatabaseModule, AuthModule, QueueModule],
   controllers: [UserController],
   providers: [UserService],
 })

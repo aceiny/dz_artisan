@@ -8,7 +8,7 @@ CREATE TYPE quote_status AS ENUM ('pending', 'accepted', 'rejected');
 CREATE TYPE job_status AS ENUM ('pending', 'scheduled', 'in_progress', 'completed', 'cancelled');
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'refunded');
 CREATE TYPE employment_status AS ENUM ('student', 'employed', 'self_employed', 'freelancer', 'unemployed', 'retired');
-CREATE TYPE job_type AS ENUM ('one_time', 'recurring', 'project_based');
+CREATE TYPE job_type AS ENUM ('one_time', 'contract', 'temporary', 'volunteer');
 
 -- Timestamp Trigger
 CREATE OR REPLACE FUNCTION update_timestamp()
@@ -91,16 +91,13 @@ CREATE TABLE jobs (
     description TEXT NOT NULL,
     location VARCHAR(255) NOT NULL,
     job_type job_type NOT NULL DEFAULT 'one_time',
-    price_range VARCHAR(50) NOT NULL,
-    required_skills TEXT[],
+    status job_status NOT NULL DEFAULT 'pending',
+    tags TEXT[],
+    minimum_price DECIMAL(10,2) NOT NULL CHECK (minimum_price > 0),
     estimated_duration VARCHAR(100),
-    deadline DATE,
-    status job_status DEFAULT 'pending',
     attachments TEXT[],
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT valid_deadline CHECK (deadline > CURRENT_DATE),
-    CONSTRAINT valid_price_format CHECK (price_range ~* '^[0-9]+\s*-\s*[0-9]+$')
 );
 
 -- Chat System
@@ -147,11 +144,11 @@ CREATE TABLE reviews (
     review_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     job_id uuid REFERENCES jobs(job_id) ON DELETE CASCADE,
     client_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    artisan_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_job_review UNIQUE (job_id, client_id, user_id)
+    CONSTRAINT unique_job_review UNIQUE (job_id, client_id, artisan_id)
 );
 
 -- Triggers

@@ -11,6 +11,7 @@ import {
   Res,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
@@ -27,11 +28,12 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from './dto/user.schema';
+import { User, UserRole } from './dto/user.schema';
 import { CreateUserProfileDto } from './dto/create-user-profile.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { MulterConfig } from 'src/config/multer.config';
 import { ParseFormDataInterceptor } from 'src/common/form-data.interceptor';
+import { CreateArtisanProfileDto } from './dto/create-artisan-profile.dto';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -224,6 +226,107 @@ export class UserController {
       message: 'User Found',
       status: HttpStatus.OK,
       data,
+    };
+  }
+
+  @ApiOperation({
+    summary: 'Get user artisan profile by token',
+    responses: {
+      200: {
+        description: 'User Found',
+      },
+      403: {
+        description: 'User not artisan',
+      },
+      404: {
+        description: 'User not found',
+      },
+    },
+  })
+  @Get('/artisan/me')
+  @UseGuards(JwtAuthGuard)
+  async findUserArtisanProfileByToken(@GetUser() user: User) {
+    if (user.role != UserRole.ARTISAN) {
+      throw new BadRequestException('User not artisan');
+    }
+    const data = await this.userService.findUserArtisanProfileByUserId(
+      user.user_id,
+    );
+    return {
+      message: 'User Artisan Profile Found',
+      status: HttpStatus.OK,
+      data,
+    };
+  }
+
+  @ApiOperation({
+    summary: 'Get user artisan profile by id ',
+    description:
+      'this will be used by another users to get a certain user artisan profile if he have',
+    responses: {
+      200: {
+        description: 'User Found',
+      },
+      404: {
+        description: 'User not found',
+      },
+    },
+  })
+  @ApiParam({
+    name: 'userId',
+    description: 'User Id',
+    example: 'e3b8a9b4-4b0e-4f9b-9c3d-0a8e4f9b2c3d',
+    required: true,
+  })
+  @Get('/artisan/:userId')
+  async findUserArtisanProfile(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+  ) {
+    const data = await this.userService.findUserArtisanProfileByUserId(userId);
+    return {
+      message: 'User Found',
+      status: HttpStatus.OK,
+      data,
+    };
+  }
+
+  @ApiOperation({
+    summary: 'Complete user artisan profile',
+    responses: {
+      200: {
+        description: 'Artisan Profile Created',
+      },
+      400: {
+        description: 'User not artisan',
+      },
+    },
+  })
+  @Post('/artisan')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('cv_document', MulterConfig),
+    ParseFormDataInterceptor,
+  )
+  async completeArtisanProfile(
+    @GetUser() user: User,
+    @Body() createArtisanProfileDto: CreateArtisanProfileDto,
+    @UploadedFile() cv_document: Express.Multer.File,
+  ) {
+    if (user.role != UserRole.ARTISAN) {
+      throw new BadRequestException('User not artisan');
+    }
+    if (!cv_document) {
+      throw new BadRequestException('CV Document is required');
+    }
+    createArtisanProfileDto.cv_document = cv_document;
+
+    const data = await this.userService.completeArtisanProfile(
+      user.user_id,
+      createArtisanProfileDto,
+    );
+    return {
+      message: 'Artisan Profile Created',
+      status: HttpStatus.OK,
     };
   }
 }

@@ -8,7 +8,7 @@ export class EmailQueueProcessor {
 
   @Process('welcome-email')
   async handleWelcomeEmail(job: Job) {
-    console.log('Processing welcome email job' , job.data);
+    console.log('Processing welcome email job', job.data);
     const { mailDto } = job.data;
     await this.mailService.sendWelcomeMail(mailDto);
   }

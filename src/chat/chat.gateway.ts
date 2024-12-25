@@ -53,14 +53,14 @@ export class ChatGateway {
   async handleMessage(client: any, payload: CreateMessageDto) {
     const userId = client.data.userId;
     if (!userId) throw new WsException('User not connected');
-    if(!payload.chat) throw new WsException('Chat not provided');
-    if(!payload.content) throw new WsException('Content not provided');
+    if (!payload.chat) throw new WsException('Chat not provided');
+    if (!payload.content) throw new WsException('Content not provided');
     //verifies that the user is part of the chat
-    try{
+    try {
       const chat = await this.chatService.findOne(payload.chat, userId);
       if (!chat) throw new WsException('Chat not found');
-    } // catch the not found expection and throw a WsException
-    catch (error) {
+    } catch (error) {
+      // catch the not found expection and throw a WsException
       throw new WsException('Chat not found');
     }
     const message = await this.chatService.addMessage(

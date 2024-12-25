@@ -44,7 +44,7 @@ export class MailService {
       html: this.welcomeMailTemplate(sendMailDto.data),
     };
     try {
-    console.log("sending email")
+      console.log('sending email');
       await this.transporter.sendMail(mailOptions);
       return true;
     } catch (error) {
@@ -60,7 +60,7 @@ export class MailService {
       html: this.newLoginMailTemplate(sendMailDto.data),
     };
     try {
-        console.log("sending email")
+      console.log('sending email');
       await this.transporter.sendMail(mailOptions);
       return true;
     } catch (error) {

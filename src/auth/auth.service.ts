@@ -10,7 +10,7 @@ import { Request, Response } from 'express';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { User } from 'src/user/dto/user.schema';
+import { User, UserRole } from 'src/user/dto/user.schema';
 import { JwtPayload } from './types/payload.type';
 
 @Injectable()
@@ -22,6 +22,7 @@ export class AuthService {
 
   private readonly allowed_routes = [
     { url: /^\/user\/complete-profile$/, method: 'POST' },
+    { url: /^\/user\/artisan$/, method: 'POST' },
     ,
   ];
 
@@ -73,6 +74,19 @@ export class AuthService {
     return this.jwtService.signAsync(payload, JwtRefreshConfig);
   }
 
+  async checkUserArtisanProfileExists(userId: string) {
+    const query = `
+    SELECT 
+      *
+    FROM artisan_portfolios 
+    WHERE user_id = $1
+    `;
+    const values = [userId];
+    const user = (await this.databaseService.query(query, values))[0];
+    if (!user) return false;
+    return true;
+  }
+
   async findUser(userId: string, req: Request): Promise<User> {
     const query = `
       SELECT 
@@ -90,6 +104,12 @@ export class AuthService {
 
     if (is_allowed_route) return user;
     if (!user.username) throw new BadRequestException('User Profile Not set');
+    if (
+      user.role === UserRole.ARTISAN &&
+      !(await this.checkUserArtisanProfileExists(userId))
+    ) {
+      throw new BadRequestException('Artisan Profile Not set');
+    }
     return user;
   }
   async validateUserWithGoogle(user: any) {

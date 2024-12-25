@@ -12,6 +12,7 @@ import * as requestIp from 'request-ip';
 import { CreateUserProfileDto } from './dto/create-user-profile.dto';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { CreateArtisanProfileDto } from './dto/create-artisan-profile.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -19,6 +20,8 @@ export class UserService {
     private readonly databaseService: DatabaseService,
     private readonly authService: AuthService,
   ) {}
+
+  // user checks and fetching
   async checkUserExistsByEmail(email: string): Promise<boolean> {
     if (!email) throw new ConflictException('No Email Provided');
     const query = 'SELECT email FROM users WHERE email = $1';
@@ -43,6 +46,18 @@ export class UserService {
     if (user.length === 0) throw new ConflictException('Invalid Credentials');
     return user[0];
   }
+  async findOne(userId: string) {
+    const query = `
+    SELECT 
+      *
+    FROM user_info 
+    WHERE user_id = $1
+    `;
+    const values = [userId];
+    const user = await this.databaseService.query(query, values);
+    if (user.length === 0) throw new ConflictException('User Not Found');
+    return user[0];
+  }
   async findAll() {
     const query = `
     SELECT 
@@ -52,6 +67,8 @@ export class UserService {
     const users = await this.databaseService.query(query);
     return users;
   }
+
+  // user authentification
   async signup(signupUserDto: SignupUserDto, res: Response) {
     if (await this.checkUserExistsByEmail(signupUserDto.email))
       throw new ConflictException('Email Already Taken');
@@ -147,6 +164,7 @@ export class UserService {
     return true;
   }
 
+  // user profile
   async completeUserProfile(
     userId: string,
     createUserProfileDto: CreateUserProfileDto,
@@ -196,18 +214,54 @@ export class UserService {
     if (!user) throw new ConflictException('User Profile not updated');
     return user;
   }
-  async findOne(userId: string) {
+
+  // artisan profile
+  async checkUserArtisanProfileExists(userId: string) {
     const query = `
     SELECT 
       *
-    FROM user_info 
+    FROM artisan_portfolios 
     WHERE user_id = $1
     `;
     const values = [userId];
-    const user = await this.databaseService.query(query, values);
-    if (user.length === 0) throw new ConflictException('User Not Found');
-    return user[0];
+    const user = (await this.databaseService.query(query, values))[0];
+    if (!user) return false;
+    return true;
   }
+  async findUserArtisanProfileByUserId(userId: string) {
+    const query = `
+    SELECT 
+      *
+    FROM artisan_portfolios 
+    WHERE user_id = $1
+    `;
+    const values = [userId];
+    const user = (await this.databaseService.query(query, values))[0];
+    if (!user) throw new ConflictException('User artisan profile Not Found');
+    return user;
+  }
+  async completeArtisanProfile(
+    userId: string,
+    createArtisanProfileDto: CreateArtisanProfileDto,
+  ) {
+    if (await this.checkUserArtisanProfileExists(userId)) {
+      throw new ConflictException('Artisan Profile already exists');
+    }
+    const query = `
+    INSERT INTO artisan_portfolios (user_id , job_title, years_experience , cv_document_url) VALUES ($1, $2, $3, $4) RETURNING *
+    `;
+    const values = [
+      userId,
+      createArtisanProfileDto.job_title,
+      createArtisanProfileDto.years_experience,
+      `${process.env.BACKEND_URL}/uploads/${createArtisanProfileDto.cv_document.filename}`,
+    ];
+    const user = (await this.databaseService.query(query, values))[0];
+    if (!user) throw new ConflictException('Artisan Profile not created');
+    return user;
+  }
+
+  // authorisation token related
   async refreshToken(payload: JwtPayload, res: Response) {
     const new_access_token = await this.authService.generateAccessToken({
       id: payload.id,

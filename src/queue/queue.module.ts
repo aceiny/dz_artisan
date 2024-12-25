@@ -15,6 +15,6 @@ import { MailModule } from 'src/mail/mail.module';
     }),
     MailModule,
   ],
-  exports : [BullModule]
+  exports: [BullModule],
 })
 export class QueueModule {}

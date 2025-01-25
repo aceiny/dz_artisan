@@ -10,7 +10,7 @@ export class AppController {
     summary: 'Welcome to the API',
     responses: {
       200: {
-        description: 'API is up and running',
+        description: 'API is up and running , WAKE UP',
       },
       500: {
         description: 'Something is wrong contact api maintainer',

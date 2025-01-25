@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtPayload } from 'src/auth/types/payload.type';
-import { MailService } from 'src/mail/mail.service';
 import { Request, Response } from 'express';
 import { SendMailDto } from 'src/mail/dto/send-mail.dto';
 import * as requestIp from 'request-ip';

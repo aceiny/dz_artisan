@@ -108,7 +108,6 @@ CREATE TABLE chats (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT different_users CHECK (user1_id != user2_id)
 );
-
 CREATE TABLE messages (
     message_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     chat_id uuid REFERENCES chats(chat_id) ON DELETE CASCADE,
@@ -145,6 +144,7 @@ CREATE TABLE quotes (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+
 -- Reviews
 CREATE TABLE reviews (
     review_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -157,7 +157,26 @@ CREATE TABLE reviews (
     CONSTRAINT unique_job_review UNIQUE (job_id, client_id, artisan_id),
     CONSTRAINT valid_client CHECK (client_id != artisan_id)
 );
+CREATE TABLE contracts (
+    contract_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    quote_id uuid REFERENCES quotes(quote_id) ON DELETE CASCADE,
+    job_id uuid REFERENCES jobs(job_id) ON DELETE CASCADE,
+    client_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    artisan_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    agreed_price DECIMAL(10,2) NOT NULL CHECK (agreed_price > 0),
+    start_date DATE NOT NULL,
+    end_date DATE,
+    status job_status NOT NULL DEFAULT 'scheduled', -- Use the existing job_status enum
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT valid_dates CHECK (end_date > start_date)
+);
 
+-- Trigger for updating timestamp
+CREATE TRIGGER update_contracts_timestamp
+    BEFORE UPDATE ON contracts
+    FOR EACH ROW
+    EXECUTE FUNCTION update_timestamp();
 -- Triggers
 CREATE TRIGGER update_users_timestamp
     BEFORE UPDATE ON users
@@ -209,3 +228,4 @@ SELECT
     created_at,
     updated_at
 FROM users;
+

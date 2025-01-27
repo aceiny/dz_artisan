@@ -46,7 +46,7 @@ export class AuthService {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        //domain: '.yxne.tech',
+        domain: '.yxne.tech',
         path: '/',
       });
     }

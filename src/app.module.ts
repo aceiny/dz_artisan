@@ -16,6 +16,7 @@ import { ExperienceModule } from './experience/experience.module';
 import { ChatModule } from './chat/chat.module';
 import { QueueModule } from './queue/queue.module';
 import { JobModule } from './job/job.module';
+import { QuoteModule } from './quote/quote.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { JobModule } from './job/job.module';
     ChatModule,
     QueueModule,
     JobModule,
+    QuoteModule,
   ],
   controllers: [AppController],
   providers: [

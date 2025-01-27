@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateJobDto } from './dto/create-job.dto';
-import { UpdateJobDto } from './dto/update-job.dto';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -22,7 +21,6 @@ export class JobService {
           `${process.env.BACKEND_URL}/uploads/${attachment.filename}`,
       ) || [],
     ];
-    console.log(values);
     const job = (await this.databaseService.query(query, values))[0];
     return job;
   }
